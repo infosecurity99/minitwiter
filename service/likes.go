@@ -7,60 +7,72 @@ import (
 	"test/storage"
 )
 
-type likeService struct {
+type likesService struct {
 	storage storage.IStorage
 	log     logger.ILogger
-	redis   storage.IRedisStorage
 }
 
-func NewLikeService(storage storage.IStorage, log logger.ILogger, redis storage.IRedisStorage) likeService {
-	return likeService{storage: storage, log: log, redis: redis}
+func NewlikesService(storage storage.IStorage, log logger.ILogger) likesService {
+	return likesService{storage: storage, log: log}
 }
 
-func (l likeService) Like(ctx context.Context, like models.Like) error {
-	l.log.Info("like create service layer", logger.Any("like", like))
+func (t likesService) Create(ctx context.Context, tweet models.CreateTweet) (models.Tweet, error) {
+	t.log.Info("likesService create service layer", logger.Any("likesService", tweet))
 
-	err := l.storage.Like().Create(ctx, like)
+	id, err := t.storage.Tweets().Create(ctx, tweet)
 	if err != nil {
-		l.log.Error("error in service layer while creating like", logger.Error(err))
-		return err
+		t.log.Error("error in service layer while creating tweet", logger.Error(err))
+		return models.Tweet{}, err
 	}
 
-	return nil
-}
-
-func (l likeService) Unlike(ctx context.Context, unlike models.Like) error {
-	l.log.Info("like delete service layer", logger.Any("unlike", unlike))
-
-	err := l.storage.Like().Delete(ctx, unlike)
+	createdTweet, err := t.storage.Tweets().GetByID(ctx, models.PrimaryKey{ID: id})
 	if err != nil {
-		l.log.Error("error in service layer while deleting like", logger.Error(err))
-		return err
+		t.log.Error("error in service layer while getting tweet by id", logger.Error(err))
+		return models.Tweet{}, err
 	}
 
-	return nil
+	return createdTweet, nil
 }
 
-func (l likeService) GetLikesByTweet(ctx context.Context, tweetID string) ([]models.User, error) {
-	l.log.Info("get likes by tweet service layer", logger.Any("tweetID", tweetID))
-
-	users, err := l.storage.Like().GetLikesByTweetID(ctx, tweetID)
+func (t likesService) Get(ctx context.Context, id string) (models.Tweet, error) {
+	tweet, err := t.storage.Tweets().GetByID(ctx, models.PrimaryKey{ID: id})
 	if err != nil {
-		l.log.Error("error in service layer while getting likes by tweet", logger.Error(err))
-		return nil, err
+		t.log.Error("error in service layer while getting tweet by id", logger.Error(err))
+		return models.Tweet{}, err
 	}
 
-	return users, nil
+	return tweet, nil
 }
 
-func (l likeService) GetLikedTweetsByUser(ctx context.Context, userID string) ([]models.Tweet, error) {
-	l.log.Info("get liked tweets by user service layer", logger.Any("userID", userID))
+func (t likesService) GetList(ctx context.Context, request models.GetListRequest) (models.TweetsResponse, error) {
+	t.log.Info("tweet get list service layer", logger.Any("request", request))
 
-	tweets, err := l.storage.Like().GetLikedTweetsByUserID(ctx, userID)
+	tweets, err := t.storage.Tweets().GetList(ctx, request)
 	if err != nil {
-		l.log.Error("error in service layer while getting liked tweets by user", logger.Error(err))
-		return nil, err
+		t.log.Error("error in service layer while getting list of tweets", logger.Error(err))
+		return models.TweetsResponse{}, err
 	}
 
 	return tweets, nil
+}
+
+func (t likesService) Update(ctx context.Context, tweet models.UpdateTweet) (models.Tweet, error) {
+	id, err := t.storage.Tweets().Update(ctx, tweet)
+	if err != nil {
+		t.log.Error("error in service layer while updating tweet", logger.Error(err))
+		return models.Tweet{}, err
+	}
+
+	updatedTweet, err := t.storage.Tweets().GetByID(ctx, models.PrimaryKey{ID: id})
+	if err != nil {
+		t.log.Error("error in service layer while getting updated tweet by id", logger.Error(err))
+		return models.Tweet{}, err
+	}
+
+	return updatedTweet, nil
+}
+
+func (t likesService) Delete(ctx context.Context, key models.PrimaryKey) error {
+	err := t.storage.Tweets().Delete(ctx, key)
+	return err
 }

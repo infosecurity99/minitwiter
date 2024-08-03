@@ -12,16 +12,14 @@ import (
 )
 
 type followerRepo struct {
-	db    *pgxpool.Pool
-	log   logger.ILogger
-	redis storage.IRedisStorage
+	db  *pgxpool.Pool
+	log logger.ILogger
 }
 
-func NewFollowersRepo(db *pgxpool.Pool, log logger.ILogger, redis storage.IRedisStorage) storage.IFollowersStorage {
+func NewFollowersRepo(db *pgxpool.Pool, log logger.ILogger) storage.IFollowersStorage {
 	return &followerRepo{
-		db:    db,
-		log:   log,
-		redis: redis,
+		db:  db,
+		log: log,
 	}
 }
 

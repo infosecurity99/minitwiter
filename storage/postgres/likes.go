@@ -11,110 +11,61 @@ import (
 	"github.com/jackc/pgx/v5/pgxpool"
 )
 
-type followerRepo struct {
-	db    *pgxpool.Pool
-	log   logger.ILogger
-	redis storage.IRedisStorage
+type likeRepo struct {
+	db  *pgxpool.Pool
+	log logger.ILogger
 }
 
-func NewFollowersRepo(db *pgxpool.Pool, log logger.ILogger, redis storage.IRedisStorage) storage.IFollowersStorage {
-	return &followerRepo{
-		db:    db,
-		log:   log,
-		redis: redis,
+func NewLikesRepo(db *pgxpool.Pool, log logger.ILogger) storage.ILikesStorage {
+	return &likeRepo{
+		db:  db,
+		log: log,
 	}
 }
 
-func (b *followerRepo) Create(ctx context.Context, follower models.CreateFollower) (string, error) {
+func (l *likeRepo) Create(ctx context.Context, like models.CreateLike) (string, error) {
 	id := uuid.New()
 
-	query := `INSERT INTO followers (follower_id, user_id, follower_user_id) VALUES ($1, $2, $3)`
-	cmdTag, err := b.db.Exec(ctx, query, id, follower.UserID, follower.FollowerUserID)
+	query := `INSERT INTO likes (like_id, tweet_id, user_id) VALUES ($1, $2, $3)`
+	cmdTag, err := l.db.Exec(ctx, query, id, like.TweetID, like.UserID)
 	if err != nil {
-		b.log.Error("error while inserting follower data", logger.Error(err))
+		l.log.Error("Error while inserting like data", logger.Error(err))
 		return "", err
 	}
 
 	if cmdTag.RowsAffected() == 0 {
-		b.log.Error("no rows affected while inserting follower", logger.Error(err))
-		return "", fmt.Errorf("no rows affected")
+		err := fmt.Errorf("No rows affected while inserting like")
+		l.log.Error(err.Error())
+		return "", err
 	}
 
 	return id.String(), nil
 }
 
-func (b *followerRepo) GetByID(ctx context.Context, key models.PrimaryKey) (models.Follower, error) {
-	follower := models.Follower{}
-	query := `SELECT follower_id, user_id, follower_user_id, created_at FROM followers WHERE follower_id = $1`
-	err := b.db.QueryRow(ctx, query, key.ID).Scan(&follower.FollowerID, &follower.UserID, &follower.FollowerUserID, &follower.CreatedAt)
+func (l *likeRepo) GetByID(ctx context.Context, likeID models.PrimaryKey) (models.Like, error) {
+	var like models.Like
+	query := `SELECT like_id, tweet_id, user_id, created_at FROM likes WHERE like_id = $1`
+	err := l.db.QueryRow(ctx, query, likeID).Scan(&like.LikeID, &like.TweetID, &like.UserID, &like.CreatedAt)
 	if err != nil {
-		b.log.Error("error while selecting follower", logger.Error(err))
-		return models.Follower{}, err
+		l.log.Error("Error while selecting like", logger.Error(err))
+		return models.Like{}, err
 	}
 
-	return follower, nil
+	return like, nil
 }
 
-func (b *followerRepo) GetList(ctx context.Context, req models.GetListRequest) (models.FollowersResponse, error) {
-	var (
-		followers = []models.Follower{}
-		count     = 0
-		filter    string
-		page      = req.Page
-		offset    = (page - 1) * req.Limit
-	)
-
-	if req.UserID != "" {
-		filter += fmt.Sprintf(" AND user_id = '%s'", req.UserID)
-	}
-
-	countQuery := `SELECT COUNT(1) FROM followers WHERE TRUE` + filter
-	err := b.db.QueryRow(ctx, countQuery).Scan(&count)
+func (l *likeRepo) Delete(ctx context.Context, likeID models.PrimaryKey) error {
+	query := `DELETE FROM likes WHERE like_id = $1`
+	cmdTag, err := l.db.Exec(ctx, query, likeID)
 	if err != nil {
-		b.log.Error("error while selecting count", logger.Error(err))
-		return models.FollowersResponse{}, err
-	}
-
-	query := `SELECT follower_id, user_id, follower_user_id, created_at FROM followers WHERE TRUE` + filter
-	query += ` ORDER BY created_at DESC LIMIT $1 OFFSET $2`
-	rows, err := b.db.Query(ctx, query, req.Limit, offset)
-	if err != nil {
-		b.log.Error("error while selecting followers", logger.Error(err))
-		return models.FollowersResponse{}, err
-	}
-	defer rows.Close()
-
-	for rows.Next() {
-		follower := models.Follower{}
-		if err := rows.Scan(&follower.FollowerID, &follower.UserID, &follower.FollowerUserID, &follower.CreatedAt); err != nil {
-			b.log.Error("error while scanning data", logger.Error(err))
-			return models.FollowersResponse{}, err
-		}
-		followers = append(followers, follower)
-	}
-
-	if err := rows.Err(); err != nil {
-		b.log.Error("error while iterating rows", logger.Error(err))
-		return models.FollowersResponse{}, err
-	}
-
-	return models.FollowersResponse{
-		Followers: followers,
-		Count:     count,
-	}, nil
-}
-
-func (b *followerRepo) Delete(ctx context.Context, key models.PrimaryKey) error {
-	query := `DELETE FROM followers WHERE follower_id = $1`
-	cmdTag, err := b.db.Exec(ctx, query, key.ID)
-	if err != nil {
-		b.log.Error("error while deleting follower", logger.Error(err))
+		l.log.Error("Error while deleting like", logger.Error(err))
 		return err
 	}
 
 	if cmdTag.RowsAffected() == 0 {
-		b.log.Error("no rows affected while deleting follower", logger.Error(err))
-		return fmt.Errorf("no rows affected")
+		err := fmt.Errorf("No rows affected while deleting like")
+		l.log.Error(err.Error())
+		return err
 	}
 
 	return nil

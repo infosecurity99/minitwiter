@@ -2,26 +2,24 @@ package postgres
 
 import (
 	"context"
-	"database/sql"
 	"fmt"
-	"github.com/google/uuid"
-	"github.com/jackc/pgx/v5/pgxpool"
 	"test/api/models"
 	"test/pkg/logger"
 	"test/storage"
+
+	"github.com/google/uuid"
+	"github.com/jackc/pgx/v5/pgxpool"
 )
 
 type userRepo struct {
-	db    *pgxpool.Pool
-	log   logger.ILogger
-	redis storage.IRedisStorage
+	db  *pgxpool.Pool
+	log logger.ILogger
 }
 
-func NewUserRepo(db *pgxpool.Pool, log logger.ILogger, redis storage.IRedisStorage) storage.IUserStorage {
+func NewUserRepo(db *pgxpool.Pool, log logger.ILogger) storage.IUserStorage {
 	return &userRepo{
-		db:    db,
-		log:   log,
-		redis: redis,
+		db:  db,
+		log: log,
 	}
 }
 
@@ -32,7 +30,7 @@ func (u *userRepo) Create(ctx context.Context, createUser models.CreateUser) (st
 		INSERT INTO users (user_id, username, password_hash, name, bio, profile_picture)
 		VALUES ($1, $2, $3, $4, $5, $6)
 	`
-	cmdTag, err := u.db.Exec(ctx, query, uid, createUser.Username, createUser.PasswordHash, createUser.Name, createUser.Bio, createUser.ProfilePicture)
+	cmdTag, err := u.db.Exec(ctx, query, uid, createUser.Username, createUser.Password, createUser.Name, createUser.Bio, createUser.ProfilePicture)
 	if err != nil {
 		u.log.Error("error while inserting user data", logger.Error(err))
 		return "", err
@@ -65,11 +63,11 @@ func (u *userRepo) GetByID(ctx context.Context, pKey models.PrimaryKey) (models.
 
 func (u *userRepo) GetList(ctx context.Context, request models.GetListRequest) (models.UsersResponse, error) {
 	var (
-		users    = []models.User{}
-		count    = 0
-		page     = request.Page
-		offset   = (page - 1) * request.Limit
-		search   = request.Search
+		users  = []models.User{}
+		count  = 0
+		page   = request.Page
+		offset = (page - 1) * request.Limit
+		search = request.Search
 	)
 
 	countQuery := `
@@ -126,24 +124,24 @@ func (u *userRepo) GetList(ctx context.Context, request models.GetListRequest) (
 	}, nil
 }
 
-func (u *userRepo) Update(ctx context.Context, request models.UpdateUser) (string, error) {
+func (u *userRepo) Update(ctx context.Context, request models.UpdateUser) (models.User, error) {
 	query := `
 		UPDATE users
-		SET username = $1, name = $2, bio = $3, profile_picture = $4, updated_at = NOW()
-		WHERE user_id = $5
+		SET  name = $1, bio = $2, profile_picture = $3, updated_at = NOW()
+		WHERE user_id = $4
 	`
-	cmdTag, err := u.db.Exec(ctx, query, request.Username, request.Name, request.Bio, request.ProfilePicture, request.ID)
+	cmdTag, err := u.db.Exec(ctx, query, request.Name, request.Bio, request.ProfilePicture, request.ID)
 	if err != nil {
 		u.log.Error("error while updating user data", logger.Error(err))
-		return "", err
+		return models.User{}, err
 	}
 
 	if cmdTag.RowsAffected() == 0 {
 		u.log.Error("no rows affected while updating user", logger.Error(err))
-		return "", fmt.Errorf("no rows affected")
+		return models.User{}, fmt.Errorf("no rows affected")
 	}
 
-	return request.ID, nil
+	return models.User{}, nil
 }
 
 func (u *userRepo) Delete(ctx context.Context, request models.PrimaryKey) error {
@@ -162,7 +160,7 @@ func (u *userRepo) Delete(ctx context.Context, request models.PrimaryKey) error 
 	return nil
 }
 
-func (u *userRepo) GetPassword(ctx context.Context, id string) (string, error) {
+func (u *userRepo) GetPassword(ctx context.Context, id models.PrimaryKey) (string, error) {
 	var password string
 	query := `SELECT password_hash FROM users WHERE user_id = $1`
 	if err := u.db.QueryRow(ctx, query, id).Scan(&password); err != nil {

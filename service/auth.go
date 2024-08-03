@@ -12,14 +12,12 @@ import (
 type authService struct {
 	storage storage.IStorage
 	log     logger.ILogger
-	redis   storage.IRedisStorage
 }
 
-func NewAuthService(storage storage.IStorage, log logger.ILogger, redis storage.IRedisStorage) authService {
+func NewAuthService(storage storage.IStorage, log logger.ILogger) authService {
 	return authService{
 		storage: storage,
 		log:     log,
-		redis:   redis,
 	}
 }
 
@@ -30,7 +28,7 @@ func (a authService) CustomerLogin(ctx context.Context, loginRequest models.Cust
 		return models.CustomerLoginResponse{}, err
 	}
 
-	if err = security.CompareHashAndPassword(customer.Password, loginRequest.Password); err != nil {
+	if err = security.CompareHashAndPassword(customer.PasswordHash, loginRequest.Password); err != nil {
 		a.log.Error("error while comparing password", logger.Error(err))
 		return models.CustomerLoginResponse{}, err
 	}
@@ -59,7 +57,7 @@ func (a authService) AdminLogin(ctx context.Context, loginRequest models.AdminLo
 		return models.AdminLoginResponse{}, err
 	}
 
-	if err := security.CompareHashAndPassword(admin.Password, loginRequest.Password); err != nil {
+	if err := security.CompareHashAndPassword(admin.PasswordHash, loginRequest.Password); err != nil {
 		a.log.Error("password is incorrect", logger.Error(err))
 		return models.AdminLoginResponse{}, err
 	}

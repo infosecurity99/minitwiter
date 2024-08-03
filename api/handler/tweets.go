@@ -32,7 +32,7 @@ func (h Handler) CreateTweet(c *gin.Context) {
 
 	ctx, cancel := context.WithTimeout(context.Background(), time.Second*5)
 	defer cancel()
-	resp, err := h.services.Tweet().Create(ctx, createTweet)
+	resp, err := h.services.Tweets().Create(ctx, createTweet)
 	if err != nil {
 		handleResponse(c, h.log, "error while creating tweet", http.StatusInternalServerError, err.Error())
 		return
@@ -64,7 +64,7 @@ func (h Handler) GetTweet(c *gin.Context) {
 
 	ctx, cancel := context.WithTimeout(context.Background(), time.Second*5)
 	defer cancel()
-	tweet, err := h.services.Tweet().Get(ctx, id.String())
+	tweet, err := h.services.Tweets().Get(ctx, id.String())
 	if err != nil {
 		handleResponse(c, h.log, "error while getting tweet by id", http.StatusInternalServerError, err)
 		return
@@ -112,7 +112,7 @@ func (h Handler) GetTweetList(c *gin.Context) {
 
 	ctx, cancel := context.WithTimeout(context.Background(), time.Second*5)
 	defer cancel()
-	resp, err := h.services.Tweet().GetList(ctx, models.GetListRequest{
+	resp, err := h.services.Tweets().GetList(ctx, models.GetListRequest{
 		Page:   page,
 		Limit:  limit,
 		Search: search,
@@ -156,7 +156,7 @@ func (h Handler) UpdateTweet(c *gin.Context) {
 
 	ctx, cancel := context.WithTimeout(context.Background(), time.Second*5)
 	defer cancel()
-	resp, err := h.services.Tweet().Update(ctx, updateTweet)
+	resp, err := h.services.Tweets().Update(ctx, updateTweet)
 	if err != nil {
 		handleResponse(c, h.log, "error while updating tweet", http.StatusInternalServerError, err.Error())
 		return
@@ -187,7 +187,7 @@ func (h Handler) DeleteTweet(c *gin.Context) {
 
 	ctx, cancel := context.WithTimeout(context.Background(), time.Second*5)
 	defer cancel()
-	if err = h.services.Tweet().Delete(ctx, models.PrimaryKey{
+	if err = h.services.Tweets().Delete(ctx, models.PrimaryKey{
 		ID: id.String(),
 	}); err != nil {
 		handleResponse(c, h.log, "error while deleting tweet by id", http.StatusInternalServerError, err.Error())

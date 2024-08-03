@@ -2,133 +2,135 @@ package handler
 
 import (
 	"context"
+	"github.com/gin-gonic/gin"
 	"net/http"
 	"test/api/models"
+	"strconv"
 	"time"
-
-	"github.com/gin-gonic/gin"
-	"github.com/google/uuid"
 )
 
-// FollowUser godoc
-// @Router       /follow [POST]
-// @Summary      Follow a user
-// @Description  Allows a user to follow another user
-// @Tags         followers
+// CreateFollower godoc
+// @Router       /follower [POST]
+// @Summary      Creates a new follower relationship
+// @Description  Create a new follower relationship between two users
+// @Tags         follower
 // @Accept       json
 // @Produce      json
-// @Param        follow body models.GetListRequest true "Follow Request"
+// @Param        follower body models.CreateFollower true "follower"
 // @Success      201  {object}  models.Follower
 // @Failure      400  {object}  models.Response
 // @Failure      500  {object}  models.Response
-func (h Handler) FollowUser(c *gin.Context) {
-	followRequest := models.GetListRequest{}
+func (h Handler) CreateFollower(c *gin.Context) {
+	var createFollower models.CreateFollower
 
-	if err := c.ShouldBindJSON(&followRequest); err != nil {
-		handleResponse(c, h.log, "error while reading body from client", http.StatusBadRequest, err)
+	if err := c.ShouldBindJSON(&createFollower); err != nil {
+		handleResponse(c, h.log, "error while reading body from client", http.StatusBadRequest, err.Error())
 		return
 	}
 
 	ctx, cancel := context.WithTimeout(context.Background(), time.Second*5)
 	defer cancel()
-	resp, err := h.services.Follower().Follow(ctx, followRequest)
+	resp, err := h.services.Followers().Create(ctx, createFollower)
 	if err != nil {
-		handleResponse(c, h.log, "error while following user", http.StatusInternalServerError, err.Error())
+		handleResponse(c, h.log, "error while creating follower relationship", http.StatusInternalServerError, err.Error())
 		return
 	}
 
 	handleResponse(c, h.log, "", http.StatusCreated, resp)
 }
 
-// UnfollowUser godoc
-// @Router       /unfollow [POST]
-// @Summary      Unfollow a user
-// @Description  Allows a user to unfollow another user
-// @Tags         followers
+// GetFollower godoc
+// @Router       /follower/{id} [GET]
+// @Summary      Get follower by ID
+// @Description  Get a follower relationship by its ID
+// @Tags         follower
 // @Accept       json
 // @Produce      json
-// @Param        unfollow body models.FollowRequest true "Unfollow Request"
+// @Param        id path string true "follower_id"
+// @Success      200  {object}  models.Follower
+// @Failure      400  {object}  models.Response
+// @Failure      404  {object}  models.Response
+// @Failure      500  {object}  models.Response
+func (h Handler) GetFollower(c *gin.Context) {
+	uid := c.Param("id")
+
+	ctx, cancel := context.WithTimeout(context.Background(), time.Second*5)
+	defer cancel()
+	resp, err := h.services.Followers().Get(ctx, uid)
+	if err != nil {
+		handleResponse(c, h.log, "error while getting follower by id", http.StatusInternalServerError, err.Error())
+		return
+	}
+
+	handleResponse(c, h.log, "", http.StatusOK, resp)
+}
+
+// GetFollowerList godoc
+// @Router       /followers [GET]
+// @Summary      Get list of followers
+// @Description  Get a list of follower relationships
+// @Tags         follower
+// @Accept       json
+// @Produce      json
+// @Param        page query string false "page"
+// @Param        limit query string false "limit"
+// @Success      200  {object}  models.FollowersResponse
+// @Failure      400  {object}  models.Response
+// @Failure      500  {object}  models.Response
+func (h Handler) GetFollowerList(c *gin.Context) {
+	var (
+		page, limit int
+		err         error
+	)
+
+	pageStr := c.DefaultQuery("page", "1")
+	page, err = strconv.Atoi(pageStr)
+	if err != nil {
+		handleResponse(c, h.log, "error while parsing page", http.StatusBadRequest, err.Error())
+		return
+	}
+
+	limitStr := c.DefaultQuery("limit", "10")
+	limit, err = strconv.Atoi(limitStr)
+	if err != nil {
+		handleResponse(c, h.log, "error while parsing limit", http.StatusBadRequest, err.Error())
+		return
+	}
+
+	ctx, cancel := context.WithTimeout(context.Background(), time.Second*5)
+	defer cancel()
+	resp, err := h.services.Followers().GetList(ctx, models.GetListRequest{
+		Page:  page,
+		Limit: limit,
+	})
+	if err != nil {
+		handleResponse(c, h.log, "error while getting list of followers", http.StatusInternalServerError, err.Error())
+		return
+	}
+
+	handleResponse(c, h.log, "", http.StatusOK, resp)
+}
+
+// DeleteFollower godoc
+// @Router       /follower/{id} [DELETE]
+// @Summary      Delete follower relationship
+// @Description  Delete a follower relationship by ID
+// @Tags         follower
+// @Accept       json
+// @Produce      json
+// @Param        id path string true "follower_id"
 // @Success      200  {object}  models.Response
 // @Failure      400  {object}  models.Response
 // @Failure      500  {object}  models.Response
-func (h Handler) UnfollowUser(c *gin.Context) {
-	unfollowRequest := models.FollowRequest{}
-
-	if err := c.ShouldBindJSON(&unfollowRequest); err != nil {
-		handleResponse(c, h.log, "error while reading body from client", http.StatusBadRequest, err)
-		return
-	}
+func (h Handler) DeleteFollower(c *gin.Context) {
+	uid := c.Param("id")
 
 	ctx, cancel := context.WithTimeout(context.Background(), time.Second*5)
 	defer cancel()
-	if err := h.services.Follower().Unfollow(ctx, unfollowRequest); err != nil {
-		handleResponse(c, h.log, "error while unfollowing user", http.StatusInternalServerError, err.Error())
+	if err := h.services.Followers().Delete(ctx, models.PrimaryKey{ID: uid}); err != nil {
+		handleResponse(c, h.log, "error while deleting follower relationship", http.StatusInternalServerError, err.Error())
 		return
 	}
 
-	handleResponse(c, h.log, "", http.StatusOK, "successfully unfollowed")
-}
-
-// GetFollowers godoc
-// @Router       /followers/{user_id} [GET]
-// @Summary      Get followers
-// @Description  Get a list of followers for a user
-// @Tags         followers
-// @Accept       json
-// @Produce      json
-// @Param        user_id path string true "User ID"
-// @Success      200  {object}  models.FollowersResponse
-// @Failure      400  {object}  models.Response
-// @Failure      404  {object}  models.Response
-// @Failure      500  {object}  models.Response
-func (h Handler) GetFollowers(c *gin.Context) {
-	uid := c.Param("user_id")
-
-	id, err := uuid.Parse(uid)
-	if err != nil {
-		handleResponse(c, h.log, "invalid uuid type", http.StatusBadRequest, err.Error())
-		return
-	}
-
-	ctx, cancel := context.WithTimeout(context.Background(), time.Second*5)
-	defer cancel()
-	followers, err := h.services.Follower().GetFollowers(ctx, id.String())
-	if err != nil {
-		handleResponse(c, h.log, "error while getting followers", http.StatusInternalServerError, err)
-		return
-	}
-
-	handleResponse(c, h.log, "", http.StatusOK, followers)
-}
-
-// GetFollowing godoc
-// @Router       /following/{user_id} [GET]
-// @Summary      Get following
-// @Description  Get a list of users that a user is following
-// @Tags         followers
-// @Accept       json
-// @Produce      json
-// @Param        user_id path string true "User ID"
-// @Success      200  {object}  models.FollowingResponse
-// @Failure      400  {object}  models.Response
-// @Failure      404  {object}  models.Response
-// @Failure      500  {object}  models.Response
-func (h Handler) GetFollowing(c *gin.Context) {
-	uid := c.Param("user_id")
-
-	id, err := uuid.Parse(uid)
-	if err != nil {
-		handleResponse(c, h.log, "invalid uuid type", http.StatusBadRequest, err.Error())
-		return
-	}
-
-	ctx, cancel := context.WithTimeout(context.Background(), time.Second*5)
-	defer cancel()
-	following, err := h.services.Follower().GetFollowing(ctx, id.String())
-	if err != nil {
-		handleResponse(c, h.log, "error while getting following list", http.StatusInternalServerError, err)
-		return
-	}
-
-	handleResponse(c, h.log, "", http.StatusOK, following)
+	handleResponse(c, h.log, "", http.StatusOK, "follower relationship successfully deleted")
 }

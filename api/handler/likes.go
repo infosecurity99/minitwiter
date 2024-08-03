@@ -2,101 +2,136 @@ package handler
 
 import (
 	"context"
-	"errors"
-	"github.com/gin-gonic/gin"
-	"github.com/google/uuid"
 	"net/http"
-	"time"
+	"strconv"
 	"test/api/models"
+	"time"
+
+	"github.com/gin-gonic/gin"
 )
 
-// LikeTweet godoc
+// CreateLike godoc
 // @Router       /like [POST]
-// @Summary      Like a tweet
-// @Description  Allows a user to like a tweet
-// @Tags         likes
+// @Summary      Creates a new like
+// @Description  Create a new like for a tweet
+// @Tags         like
 // @Accept       json
 // @Produce      json
-// @Param        like body models.LikeRequest true "Like Request"
+// @Param        like body models.CreateLike true "like"
 // @Success      201  {object}  models.Like
 // @Failure      400  {object}  models.Response
 // @Failure      500  {object}  models.Response
-func (h Handler) LikeTweet(c *gin.Context) {
-	likeRequest := models.LikeRequest{}
+func (h Handler) CreateLike(c *gin.Context) {
+	var createLike models.CreateLike
 
-	if err := c.ShouldBindJSON(&likeRequest); err != nil {
-		handleResponse(c, h.log, "error while reading body from client", http.StatusBadRequest, err)
+	if err := c.ShouldBindJSON(&createLike); err != nil {
+		handleResponse(c, h.log, "error while reading body from client", http.StatusBadRequest, err.Error())
 		return
 	}
 
 	ctx, cancel := context.WithTimeout(context.Background(), time.Second*5)
 	defer cancel()
-	resp, err := h.services.Like().Like(ctx, likeRequest)
+	resp, err := h.services.Likes().Create(ctx, models.CreateTweet{})
 	if err != nil {
-		handleResponse(c, h.log, "error while liking tweet", http.StatusInternalServerError, err.Error())
+		handleResponse(c, h.log, "error while creating like", http.StatusInternalServerError, err.Error())
 		return
 	}
 
 	handleResponse(c, h.log, "", http.StatusCreated, resp)
 }
 
-// UnlikeTweet godoc
-// @Router       /unlike [POST]
-// @Summary      Unlike a tweet
-// @Description  Allows a user to unlike a tweet
-// @Tags         likes
+// GetLike godoc
+// @Router       /like/{id} [GET]
+// @Summary      Get like by ID
+// @Description  Get a like by its ID
+// @Tags         like
 // @Accept       json
 // @Produce      json
-// @Param        unlike body models.LikeRequest true "Unlike Request"
-// @Success      200  {object}  models.Response
-// @Failure      400  {object}  models.Response
-// @Failure      500  {object}  models.Response
-func (h Handler) UnlikeTweet(c *gin.Context) {
-	unlikeRequest := models.LikeRequest{}
-
-	if err := c.ShouldBindJSON(&unlikeRequest); err != nil {
-		handleResponse(c, h.log, "error while reading body from client", http.StatusBadRequest, err)
-		return
-	}
-
-	ctx, cancel := context.WithTimeout(context.Background(), time.Second*5)
-	defer cancel()
-	if err := h.services.Like().Unlike(ctx, unlikeRequest); err != nil {
-		handleResponse(c, h.log, "error while unliking tweet", http.StatusInternalServerError, err.Error())
-		return
-	}
-
-	handleResponse(c, h.log, "", http.StatusOK, "successfully unliked")
-}
-
-// GetLikes godoc
-// @Router       /likes/{tweet_id} [GET]
-// @Summary      Get likes
-// @Description  Get a list of users who liked a tweet
-// @Tags         likes
-// @Accept       json
-// @Produce      json
-// @Param        tweet_id path string true "Tweet ID"
-// @Success      200  {object}  models.LikesResponse
+// @Param        id path string true "like_id"
+// @Success      200  {object}  models.Like
 // @Failure      400  {object}  models.Response
 // @Failure      404  {object}  models.Response
 // @Failure      500  {object}  models.Response
-func (h Handler) GetLikes(c *gin.Context) {
-	tweetID := c.Param("tweet_id")
+func (h Handler) GetLike(c *gin.Context) {
+	uid := c.Param("id")
 
-	id, err := uuid.Parse(tweetID)
+	ctx, cancel := context.WithTimeout(context.Background(), time.Second*5)
+	defer cancel()
+	resp, err := h.services.Likes().Get(ctx, uid)
 	if err != nil {
-		handleResponse(c, h.log, "invalid uuid type", http.StatusBadRequest, err.Error())
+		handleResponse(c, h.log, "error while getting like by id", http.StatusInternalServerError, err.Error())
+		return
+	}
+
+	handleResponse(c, h.log, "", http.StatusOK, resp)
+}
+
+// GetLikeList godoc
+// @Router       /likes [GET]
+// @Summary      Get list of likes
+// @Description  Get a list of likes
+// @Tags         like
+// @Accept       json
+// @Produce      json
+// @Param        page query string false "page"
+// @Param        limit query string false "limit"
+// @Success      200  {object}  models.LikesResponse
+// @Failure      400  {object}  models.Response
+// @Failure      500  {object}  models.Response
+func (h Handler) GetLikeList(c *gin.Context) {
+	var (
+		page, limit int
+		err         error
+	)
+
+	pageStr := c.DefaultQuery("page", "1")
+	page, err = strconv.Atoi(pageStr)
+	if err != nil {
+		handleResponse(c, h.log, "error while parsing page", http.StatusBadRequest, err.Error())
+		return
+	}
+
+	limitStr := c.DefaultQuery("limit", "10")
+	limit, err = strconv.Atoi(limitStr)
+	if err != nil {
+		handleResponse(c, h.log, "error while parsing limit", http.StatusBadRequest, err.Error())
 		return
 	}
 
 	ctx, cancel := context.WithTimeout(context.Background(), time.Second*5)
 	defer cancel()
-	likes, err := h.services.Like().GetLikes(ctx, id.String())
+	resp, err := h.services.Likes().GetList(ctx, models.GetListRequest{
+		Page:  page,
+		Limit: limit,
+	})
 	if err != nil {
-		handleResponse(c, h.log, "error while getting likes", http.StatusInternalServerError, err)
+		handleResponse(c, h.log, "error while getting list of likes", http.StatusInternalServerError, err.Error())
 		return
 	}
 
-	handleResponse(c, h.log, "", http.StatusOK, likes)
+	handleResponse(c, h.log, "", http.StatusOK, resp)
+}
+
+// DeleteLike godoc
+// @Router       /like/{id} [DELETE]
+// @Summary      Delete like
+// @Description  Delete a like by ID
+// @Tags         like
+// @Accept       json
+// @Produce      json
+// @Param        id path string true "like_id"
+// @Success      200  {object}  models.Response
+// @Failure      400  {object}  models.Response
+// @Failure      500  {object}  models.Response
+func (h Handler) DeleteLike(c *gin.Context) {
+	uid := c.Param("id")
+
+	ctx, cancel := context.WithTimeout(context.Background(), time.Second*5)
+	defer cancel()
+	if err := h.services.Likes().Delete(ctx, models.PrimaryKey{ID: uid}); err != nil {
+		handleResponse(c, h.log, "error while deleting like", http.StatusInternalServerError, err.Error())
+		return
+	}
+
+	handleResponse(c, h.log, "", http.StatusOK, "like successfully deleted")
 }

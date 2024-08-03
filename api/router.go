@@ -51,22 +51,17 @@ func New(services service.IServiceManager, log logger.ILogger) *gin.Engine {
 		r.PUT("/tweet/:id", h.UpdateTweet)
 		r.DELETE("/tweet/:id", h.DeleteTweet)
 
-		// retweets endpoints
-		r.POST("/retweet", h.CreateRetweet)
-		r.GET("/retweet/:id", h.GetRetweet)
-		r.GET("/retweets", h.GetRetweetList)
-		
-
 		// likes endpoints
-		r.POST("/like", h.LikeTweet)
-		r.GET("/like/:id", h.UnlikeTweet)
-		r.GET("/likes", h.GetLikes)
+		r.POST("/like", h.CreateLike)
+		r.GET("/like/:id", h.GetLikeList)
+		r.GET("/likes", h.GetLikeList)
+		r.DELETE("/like", h.DeleteLike)
 
 		// followers endpoints
-		r.POST("/follower", h.FollowUser)
-		r.GET("/follower/:id", h.GetFollowing)
-		r.GET("/followers", h.GetFollowers)
-		r.PUT("/follower/:id", h.UnfollowUser)
+		r.POST("/follower", h.CreateFollower)
+		r.GET("/follower/:id", h.GetFollower)
+		r.GET("/followers", h.GetFollowerList)
+		r.PUT("/follower/:id", h.DeleteFollower)
 
 		r.GET("/swagger/*any", ginSwagger.WrapHandler(swaggerFiles.Handler))
 	}

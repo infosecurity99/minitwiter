@@ -18,13 +18,12 @@ import (
 )
 
 type Store struct {
-	pool  *pgxpool.Pool
-	log   logger.ILogger
-	cfg   config.Config
-	redis storage.IRedisStorage
+	pool *pgxpool.Pool
+	log  logger.ILogger
+	cfg  config.Config
 }
 
-func New(ctx context.Context, cfg config.Config, log logger.ILogger, redis storage.IRedisStorage) (storage.IStorage, error) {
+func New(ctx context.Context, cfg config.Config, log logger.ILogger) (storage.IStorage, error) {
 	url := fmt.Sprintf(
 		`postgres://%s:%s@%s:%s/%s?sslmode=disable`,
 		cfg.PostgresUser,
@@ -83,10 +82,9 @@ func New(ctx context.Context, cfg config.Config, log logger.ILogger, redis stora
 	log.Info("!!!!! came here")
 
 	return Store{
-		pool:  pool,
-		log:   log,
-		cfg:   cfg,
-		redis: redis,
+		pool: pool,
+		log:  log,
+		cfg:  cfg,
 	}, nil
 }
 
@@ -95,24 +93,18 @@ func (s Store) Close() {
 }
 
 func (s Store) User() storage.IUserStorage {
-	return NewUserRepo(s.pool, s.log, s.redis)
+	return NewUserRepo(s.pool, s.log)
 }
 
 func (s Store) Followers() storage.IFollowersStorage {
-	return NewFollowersRepo(s.pool, s.log, s.redis)
+	return NewFollowersRepo(s.pool, s.log)
 }
 
-func (s Store) Likes() stroage.ILikesStorage {
-	return NewLikesRepo(s.pool, s.log, s.redis)
-}
-func (s Store) Retweets() storage.IReTweetsStorage {
-	return NewReTweetRepo(s.pool, s.log, s.redis)
+func (s Store) Likes() storage.ILikesStorage {
+	return NewLikesRepo(s.pool, s.log)
 }
 
 func (s Store) Tweets() storage.ITweetsStorage {
-	return NewTweetRepo(s.pool, s.log, s.redis)
+	return NewTweetRepo(s.pool, s.log)
 }
 
-func (s Store) Redis() storage.IRedisStorage {
-	return s.redis
-}

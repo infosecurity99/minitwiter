@@ -7,32 +7,33 @@ import (
 
 type IServiceManager interface {
 	User() userService
-	Tweets() tweetsService
+	Tweets() tweetService
 	Followers() followersService
 	Likes() likesService
-	Retweets() retweetsSerive
 
 	AuthService() authService
-	RedisService() redisService
 }
 
 type Service struct {
 	userService      userService
-	tweetsService    tweetsService
+	tweetsService    tweetService
 	followersService followersService
 	likesService     likesService
-	retweets         retweetsSerice
 
-	authService  authService
-	redisService redisService
+	authService authService
 }
 
-func New(storage storage.IStorage, log logger.ILogger, redis storage.IRedisStorage) Service {
+func New(storage storage.IStorage, log logger.ILogger) Service {
 	services := Service{}
+	services.tweetsService = NewTweetService(storage, log)
+	services.followersService = NewfollowersService(storage, log)
+	services.likesService = NewlikesService(storage, log)
 
-	services.userService = NewUserService(storage, log, redis)
-	services.authService = NewAuthService(storage, log, redis)
-	services.redisService = NewRedisService(storage, log, redis)
+
+
+	services.userService= NewuserService(storage, log) // Bu storage.IUserStorage qaytaradi
+
+	services.authService = NewAuthService(storage, log)
 	return services
 }
 
@@ -40,26 +41,18 @@ func (s Service) User() userService {
 	return s.userService
 }
 
-func (s Service) Tweets() tweetsService {
-	return s.tweetService
+func (s Service) Tweets() tweetService {
+	return s.tweetsService
 }
 
-func (s Service) Followers() followerService {
-	return s.followersSerive
+func (s Service) Followers() followersService {
+	return s.followersService
 }
 
 func (s Service) Likes() likesService {
 	return s.likesService
 }
 
-func (s Service) Retweets() retweetsSerivce {
-	return s.retweets
-}
-
 func (s Service) AuthService() authService {
 	return s.authService
-}
-
-func (s Service) RedisService() redisService {
-	return s.redisService
 }

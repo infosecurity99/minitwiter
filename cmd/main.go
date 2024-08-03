@@ -7,7 +7,6 @@ import (
 	"test/pkg/logger"
 	"test/service"
 	"test/storage/postgres"
-	"test/storage/redis"
 )
 
 func main() {
@@ -15,16 +14,14 @@ func main() {
 
 	log := logger.New(cfg.ServiceName)
 
-	newRedis := redis.New(cfg)
-
-	pgStore, err := postgres.New(context.Background(), cfg, log, newRedis)
+	pgStore, err := postgres.New(context.Background(), cfg, log)
 	if err != nil {
 		log.Error("error while connecting to db", logger.Error(err))
 		return
 	}
 	defer pgStore.Close()
 
-	services := service.New(pgStore, log, newRedis)
+	services := service.New(pgStore, log)
 
 	server := api.New(services, log)
 

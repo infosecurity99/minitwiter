@@ -7,60 +7,64 @@ import (
 	"test/storage"
 )
 
-type followerService struct {
+type followersService struct {
 	storage storage.IStorage
 	log     logger.ILogger
-	redis   storage.IRedisStorage
 }
 
-func NewFollowerService(storage storage.IStorage, log logger.ILogger, redis storage.IRedisStorage) followerService {
-	return followerService{storage: storage, log: log, redis: redis}
+func NewfollowersService(storage storage.IStorage, log logger.ILogger) followersService {
+	return followersService{storage: storage, log: log}
 }
 
-func (f followerService) Follow(ctx context.Context, follow models.Follow) error {
-	f.log.Info("follower create service layer", logger.Any("follow", follow))
+func (f followersService) Create(ctx context.Context, follower models.CreateFollower) (models.Follower, error) {
+    f.log.Info("follower create service layer", logger.Any("follower", follower))
 
-	err := f.storage.Follower().Create(ctx, follow)
-	if err != nil {
-		f.log.Error("error in service layer while creating follow relationship", logger.Error(err))
-		return err
-	}
+    id, err := f.storage.Followers().Create(ctx, follower)
+    if err != nil {
+        f.log.Error("error in service layer while creating follower", logger.Error(err))
+        return models.Follower{}, err
+    }
 
-	return nil
+    createdFollower, err := f.storage.Followers().GetByID(ctx, models.PrimaryKey{ID: id})
+    if err != nil {
+        f.log.Error("error in service layer while getting follower by id", logger.Error(err))
+        return models.Follower{}, err
+    }
+
+    return createdFollower, nil
 }
 
-func (f followerService) Unfollow(ctx context.Context, unfollow models.Follow) error {
-	f.log.Info("follower delete service layer", logger.Any("unfollow", unfollow))
 
-	err := f.storage.Follower().Delete(ctx, unfollow)
-	if err != nil {
-		f.log.Error("error in service layer while deleting follow relationship", logger.Error(err))
-		return err
-	}
 
-	return nil
+func (f followersService) Get(ctx context.Context, id string) (models.Follower, error) {
+    follower, err := f.storage.Followers().GetByID(ctx, models.PrimaryKey{ID: id})
+    if err != nil {
+        f.log.Error("error in service layer while getting follower by id", logger.Error(err))
+        return models.Follower{}, err
+    }
+
+    return follower, nil
 }
 
-func (f followerService) GetFollowers(ctx context.Context, userID string) ([]models.User, error) {
-	f.log.Info("get followers service layer", logger.Any("userID", userID))
 
-	followers, err := f.storage.Follower().GetFollowersByUserID(ctx, userID)
-	if err != nil {
-		f.log.Error("error in service layer while getting followers", logger.Error(err))
-		return nil, err
-	}
 
-	return followers, nil
+
+func (f followersService) GetList(ctx context.Context, request models.GetListRequest) (models.FollowersResponse, error) {
+    f.log.Info("follower get list service layer", logger.Any("request", request))
+
+    followers, err := f.storage.Followers().GetList(ctx, request)
+    if err != nil {
+        f.log.Error("error in service layer while getting list of followers", logger.Error(err))
+        return models.FollowersResponse{}, err
+    }
+
+    return followers, nil
 }
 
-func (f followerService) GetFollowing(ctx context.Context, userID string) ([]models.User, error) {
-	f.log.Info("get following service layer", logger.Any("userID", userID))
 
-	following, err := f.storage.Follower().GetFollowingByUserID(ctx, userID)
-	if err != nil {
-		f.log.Error("error in service layer while getting following", logger.Error(err))
-		return nil, err
-	}
 
-	return following, nil
+
+func (f followersService) Delete(ctx context.Context, key models.PrimaryKey) error {
+    err := f.storage.Followers().Delete(ctx, key)
+    return err
 }
