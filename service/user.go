@@ -17,11 +17,8 @@ type userService struct {
 	log     logger.ILogger
 }
 
-func NewuserService(storage storage.IStorage, log logger.ILogger) storage.IUserStorage {
-	return &userService{
-		storage: storage,
-		log:     log,
-	}
+func NewuserService(storage storage.IStorage, log logger.ILogger) userService {
+	return userService{storage: storage,log:  log}
 }
 
 func (u *userService) Create(ctx context.Context, createUser models.CreateUser) (string, error) {

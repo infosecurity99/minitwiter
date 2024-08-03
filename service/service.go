@@ -31,7 +31,7 @@ func New(storage storage.IStorage, log logger.ILogger) Service {
 
 
 
-	services.userService= NewuserService(storage, log) // Bu storage.IUserStorage qaytaradi
+	services.userService= NewuserService(storage, log) 
 
 	services.authService = NewAuthService(storage, log)
 	return services
