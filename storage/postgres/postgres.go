@@ -108,3 +108,6 @@ func (s Store) Tweets() storage.ITweetsStorage {
 	return NewTweetRepo(s.pool, s.log)
 }
 
+func (s Store) Retweets() storage.IRetweetsStorage {
+	return NewReTweetsRepo(s.pool, s.log)
+}

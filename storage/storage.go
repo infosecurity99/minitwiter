@@ -12,6 +12,7 @@ type IStorage interface {
 	Tweets() ITweetsStorage
 	Followers() IFollowersStorage
 	Likes() ILikesStorage
+	Retweets() IRetweetsStorage
 	
 }
 
@@ -48,3 +49,7 @@ type ILikesStorage interface {
 	Delete(context.Context, models.PrimaryKey) error
 }
 
+type IRetweetsStorage interface {
+	Create(context.Context, models.CreateRetweet) (string, error)
+	Delete(context.Context, models.PrimaryKey) error
+}

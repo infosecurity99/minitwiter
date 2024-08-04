@@ -10,7 +10,7 @@ type IServiceManager interface {
 	Tweets() tweetService
 	Followers() followersService
 	Likes() likesService
-
+	Retweets() retweetsService
 	AuthService() authService
 }
 
@@ -19,7 +19,7 @@ type Service struct {
 	tweetsService    tweetService
 	followersService followersService
 	likesService     likesService
-
+    retweetsService   retweetsService
 	authService authService
 }
 
@@ -28,8 +28,9 @@ func New(storage storage.IStorage, log logger.ILogger) Service {
 	services.tweetsService = NewTweetService(storage, log)
 	services.followersService = NewfollowersService(storage, log)
 	services.likesService = NewlikesService(storage, log)
+    services.retweetsService=NewretweetsSerice(storage,log)
 
-	services.userService= NewuserService(storage, log) 
+	services.userService = NewuserService(storage, log)
 	services.authService = NewAuthService(storage, log)
 	return services
 }
@@ -52,4 +53,8 @@ func (s Service) Likes() likesService {
 
 func (s Service) AuthService() authService {
 	return s.authService
+}
+
+func (s Service) Retweets() retweetsService  {
+	return s.retweetsService
 }

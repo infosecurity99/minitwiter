@@ -34,3 +34,9 @@ CREATE TABLE likes (
     user_id UUID REFERENCES users(user_id),
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
+CREATE TABLE retweets (
+    retweet_id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
+    tweet_id UUID REFERENCES tweets(tweet_id),
+    user_id UUID REFERENCES users(user_id),
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
