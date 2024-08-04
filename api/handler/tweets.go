@@ -14,32 +14,43 @@ import (
 // CreateTweet godoc
 // @Router       /tweet [POST]
 // @Summary      Creates a new tweet
-// @Description  Create a new tweet
+// @Description  Create a new tweet by an authenticated user
 // @Tags         tweet
 // @Accept       json
 // @Produce      json
 // @Param        tweet body models.CreateTweet true "tweet"
 // @Success      201  {object}  models.Tweet
 // @Failure      400  {object}  models.Response
+// @Failure      401  {object}  models.Response
 // @Failure      500  {object}  models.Response
 func (h Handler) CreateTweet(c *gin.Context) {
-	createTweet := models.CreateTweet{}
+	var createTweet models.CreateTweet
 
 	if err := c.ShouldBindJSON(&createTweet); err != nil {
-		handleResponse(c, h.log, "error while reading body from client", http.StatusBadRequest, err)
+		handleResponse(c, h.log, "error while reading body from client", http.StatusBadRequest, err.Error())
 		return
 	}
 
+	userID, ok := c.Get("user_id") 
+	if !ok {
+		handleResponse(c, h.log, "unauthorized", http.StatusUnauthorized, "user not authenticated")
+		return
+	}
+
+	createTweet.UserID = userID.(string)
+
 	ctx, cancel := context.WithTimeout(context.Background(), time.Second*5)
 	defer cancel()
-	resp, err := h.services.Tweets().Create(ctx, createTweet)
+
+	tweet, err := h.services.Tweets().Create(ctx, createTweet)
 	if err != nil {
 		handleResponse(c, h.log, "error while creating tweet", http.StatusInternalServerError, err.Error())
 		return
 	}
 
-	handleResponse(c, h.log, "", http.StatusCreated, resp)
+	handleResponse(c, h.log, "tweet created successfully", http.StatusCreated, tweet)
 }
+
 
 // GetTweet godoc
 // @Router       /tweet/{id} [GET]

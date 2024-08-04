@@ -24,8 +24,21 @@ func NewLikesRepo(db *pgxpool.Pool, log logger.ILogger) storage.ILikesStorage {
 }
 
 func (l *likeRepo) Create(ctx context.Context, like models.CreateLike) (string, error) {
-	id := uuid.New()
+	// Check if the like already exists
+	var count int
+	checkQuery := `SELECT COUNT(1) FROM likes WHERE tweet_id = $1 AND user_id = $2`
+	err := l.db.QueryRow(ctx, checkQuery, like.TweetID, like.UserID).Scan(&count)
+	if err != nil {
+		l.log.Error("Error while checking if like exists", logger.Error(err))
+		return "", err
+	}
+	if count > 0 {
+		err := fmt.Errorf("user has already liked this tweet")
+		l.log.Error(err.Error())
+		return "", err
+	}
 
+	id := uuid.New()
 	query := `INSERT INTO likes (like_id, tweet_id, user_id) VALUES ($1, $2, $3)`
 	cmdTag, err := l.db.Exec(ctx, query, id, like.TweetID, like.UserID)
 	if err != nil {
@@ -55,6 +68,20 @@ func (l *likeRepo) GetByID(ctx context.Context, likeID models.PrimaryKey) (model
 }
 
 func (l *likeRepo) Delete(ctx context.Context, likeID models.PrimaryKey) error {
+	// Check if the like exists
+	var count int
+	checkQuery := `SELECT COUNT(1) FROM likes WHERE like_id = $1`
+	err := l.db.QueryRow(ctx, checkQuery, likeID).Scan(&count)
+	if err != nil {
+		l.log.Error("Error while checking if like exists", logger.Error(err))
+		return err
+	}
+	if count == 0 {
+		err := fmt.Errorf("like does not exist")
+		l.log.Error(err.Error())
+		return err
+	}
+
 	query := `DELETE FROM likes WHERE like_id = $1`
 	cmdTag, err := l.db.Exec(ctx, query, likeID)
 	if err != nil {

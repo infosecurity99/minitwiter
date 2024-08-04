@@ -30,7 +30,7 @@ func (h Handler) CreateLike(c *gin.Context) {
 
 	ctx, cancel := context.WithTimeout(context.Background(), time.Second*5)
 	defer cancel()
-	resp, err := h.services.Likes().Create(ctx, models.CreateTweet{})
+	resp, err := h.services.Likes().Create(ctx, createLike)
 	if err != nil {
 		handleResponse(c, h.log, "error while creating like", http.StatusInternalServerError, err.Error())
 		return

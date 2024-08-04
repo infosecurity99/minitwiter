@@ -1,0 +1,940 @@
+definitions:
+  models.AdminLoginRequest:
+    properties:
+      login:
+        type: string
+      password:
+        type: string
+    type: object
+  models.AdminLoginResponse:
+    properties:
+      access_token:
+        type: string
+      refresh_token:
+        type: string
+    type: object
+  models.CreateFollower:
+    properties:
+      follower_user_id:
+        type: string
+      user_id:
+        type: string
+    type: object
+  models.CreateLike:
+    properties:
+      tweet_id:
+        type: string
+      user_id:
+        type: string
+    type: object
+  models.CreateRetweet:
+    properties:
+      original_tweet_id:
+        type: string
+      user_id:
+        type: string
+    type: object
+  models.CreateTweet:
+    properties:
+      content:
+        type: string
+      image_url:
+        type: string
+      user_id:
+        type: string
+      video_url:
+        type: string
+    type: object
+  models.CreateUser:
+    properties:
+      bio:
+        type: string
+      name:
+        type: string
+      password:
+        type: string
+      profile_picture:
+        type: string
+      username:
+        type: string
+    type: object
+  models.CustomerLoginRequest:
+    properties:
+      login:
+        type: string
+      password:
+        type: string
+    type: object
+  models.Follower:
+    properties:
+      created_at:
+        type: string
+      follower_id:
+        type: string
+      follower_user_id:
+        type: string
+      user_id:
+        type: string
+    type: object
+  models.FollowersResponse:
+    properties:
+      count:
+        type: integer
+      followers:
+        items:
+          $ref: '#/definitions/models.Follower'
+        type: array
+    type: object
+  models.Like:
+    properties:
+      created_at:
+        type: string
+      like_id:
+        type: string
+      tweet_id:
+        type: string
+      user_id:
+        type: string
+    type: object
+  models.Response:
+    properties:
+      data: {}
+      description:
+        type: string
+      statusCode:
+        type: integer
+    type: object
+  models.Retweet:
+    properties:
+      created_at:
+        type: string
+      original_tweet_id:
+        type: string
+      retweet_id:
+        type: string
+      user_id:
+        type: string
+    type: object
+  models.Tweet:
+    properties:
+      content:
+        type: string
+      created_at:
+        type: string
+      id:
+        type: string
+      image_url:
+        type: string
+      updated_at:
+        type: string
+      user_id:
+        type: string
+      video_url:
+        type: string
+    type: object
+  models.TweetsResponse:
+    properties:
+      count:
+        type: integer
+      tweets:
+        items:
+          $ref: '#/definitions/models.Tweet'
+        type: array
+    type: object
+  models.UpdateTweet:
+    properties:
+      content:
+        type: string
+      id:
+        type: string
+      image_url:
+        type: string
+      video_url:
+        type: string
+    type: object
+  models.UpdateUser:
+    properties:
+      bio:
+        type: string
+      name:
+        type: string
+      profile_picture:
+        type: string
+    type: object
+  models.UpdateUserPassword:
+    properties:
+      new_password:
+        type: string
+      old_password:
+        type: string
+    type: object
+  models.User:
+    properties:
+      bio:
+        type: string
+      created_at:
+        type: string
+      id:
+        type: string
+      name:
+        type: string
+      profile_picture:
+        type: string
+      updated_at:
+        type: string
+      username:
+        type: string
+    type: object
+  models.UsersResponse:
+    properties:
+      count:
+        type: integer
+      users:
+        items:
+          $ref: '#/definitions/models.User'
+        type: array
+    type: object
+info:
+  contact: {}
+  description: This is a sample server celler server.
+  title: Swagger Example API
+  version: "1.0"
+paths:
+  /auth/admin/login:
+    post:
+      consumes:
+      - application/json
+      description: admin login
+      parameters:
+      - description: login
+        in: body
+        name: login
+        required: true
+        schema:
+          $ref: '#/definitions/models.AdminLoginRequest'
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: Created
+          schema:
+            $ref: '#/definitions/models.AdminLoginResponse'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/models.Response'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/models.Response'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/models.Response'
+      summary: Admin login
+      tags:
+      - auth
+  /auth/customer/login:
+    post:
+      consumes:
+      - application/json
+      description: Customer login
+      parameters:
+      - description: login
+        in: body
+        name: login
+        required: true
+        schema:
+          $ref: '#/definitions/models.CustomerLoginRequest'
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: Created
+          schema:
+            $ref: '#/definitions/models.Like'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/models.Response'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/models.Response'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/models.Response'
+      summary: Customer login
+      tags:
+      - auth
+  /follower:
+    post:
+      consumes:
+      - application/json
+      description: Create a new follower relationship between two users
+      parameters:
+      - description: follower
+        in: body
+        name: follower
+        required: true
+        schema:
+          $ref: '#/definitions/models.CreateFollower'
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: Created
+          schema:
+            $ref: '#/definitions/models.Follower'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/models.Response'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/models.Response'
+      summary: Creates a new follower relationship
+      tags:
+      - follower
+  /follower/{id}:
+    delete:
+      consumes:
+      - application/json
+      description: Delete a follower relationship by ID
+      parameters:
+      - description: follower_id
+        in: path
+        name: id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/models.Response'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/models.Response'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/models.Response'
+      summary: Delete follower relationship
+      tags:
+      - follower
+    get:
+      consumes:
+      - application/json
+      description: Get a follower relationship by its ID
+      parameters:
+      - description: follower_id
+        in: path
+        name: id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/models.Follower'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/models.Response'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/models.Response'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/models.Response'
+      summary: Get follower by ID
+      tags:
+      - follower
+  /followers:
+    get:
+      consumes:
+      - application/json
+      description: Get a list of follower relationships
+      parameters:
+      - description: page
+        in: query
+        name: page
+        type: string
+      - description: limit
+        in: query
+        name: limit
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/models.FollowersResponse'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/models.Response'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/models.Response'
+      summary: Get list of followers
+      tags:
+      - follower
+  /like:
+    post:
+      consumes:
+      - application/json
+      description: Create a new like for a tweet
+      parameters:
+      - description: like
+        in: body
+        name: like
+        required: true
+        schema:
+          $ref: '#/definitions/models.CreateLike'
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: Created
+          schema:
+            $ref: '#/definitions/models.Like'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/models.Response'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/models.Response'
+      summary: Creates a new like
+      tags:
+      - like
+  /like/{id}:
+    delete:
+      consumes:
+      - application/json
+      description: Delete a like by ID
+      parameters:
+      - description: like_id
+        in: path
+        name: id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/models.Response'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/models.Response'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/models.Response'
+      summary: Delete like
+      tags:
+      - like
+    get:
+      consumes:
+      - application/json
+      description: Get a like by its ID
+      parameters:
+      - description: like_id
+        in: path
+        name: id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/models.Like'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/models.Response'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/models.Response'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/models.Response'
+      summary: Get like by ID
+      tags:
+      - like
+  /retweet:
+    post:
+      consumes:
+      - application/json
+      description: Create a new retweet for a tweet
+      parameters:
+      - description: retweet
+        in: body
+        name: retweet
+        required: true
+        schema:
+          $ref: '#/definitions/models.CreateRetweet'
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: Created
+          schema:
+            $ref: '#/definitions/models.Retweet'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/models.Response'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/models.Response'
+      summary: Creates a new retweet
+      tags:
+      - retweet
+  /retweet/{id}:
+    delete:
+      consumes:
+      - application/json
+      description: Delete a retweet by ID
+      parameters:
+      - description: retweet_id
+        in: path
+        name: id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/models.Response'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/models.Response'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/models.Response'
+      summary: Delete retweet
+      tags:
+      - retweet
+  /tweet:
+    post:
+      consumes:
+      - application/json
+      description: Create a new tweet by an authenticated user
+      parameters:
+      - description: tweet
+        in: body
+        name: tweet
+        required: true
+        schema:
+          $ref: '#/definitions/models.CreateTweet'
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: Created
+          schema:
+            $ref: '#/definitions/models.Tweet'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/models.Response'
+        "401":
+          description: Unauthorized
+          schema:
+            $ref: '#/definitions/models.Response'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/models.Response'
+      summary: Creates a new tweet
+      tags:
+      - tweet
+  /tweet/{id}:
+    delete:
+      consumes:
+      - application/json
+      description: Delete a tweet
+      parameters:
+      - description: tweet_id
+        in: path
+        name: id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/models.Response'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/models.Response'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/models.Response'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/models.Response'
+      summary: Delete tweet
+      tags:
+      - tweet
+    get:
+      consumes:
+      - application/json
+      description: Get tweet by ID
+      parameters:
+      - description: tweet_id
+        in: path
+        name: id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/models.Tweet'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/models.Response'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/models.Response'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/models.Response'
+      summary: Get tweet
+      tags:
+      - tweet
+    put:
+      consumes:
+      - application/json
+      description: Update a tweet
+      parameters:
+      - description: tweet_id
+        in: path
+        name: id
+        required: true
+        type: string
+      - description: tweet
+        in: body
+        name: tweet
+        required: true
+        schema:
+          $ref: '#/definitions/models.UpdateTweet'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/models.Tweet'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/models.Response'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/models.Response'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/models.Response'
+      summary: Update tweet
+      tags:
+      - tweet
+  /tweets:
+    get:
+      consumes:
+      - application/json
+      description: Get list of tweets
+      parameters:
+      - description: page
+        in: query
+        name: page
+        type: string
+      - description: limit
+        in: query
+        name: limit
+        type: string
+      - description: search
+        in: query
+        name: search
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/models.TweetsResponse'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/models.Response'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/models.Response'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/models.Response'
+      summary: Get tweet list
+      tags:
+      - tweet
+  /user:
+    post:
+      consumes:
+      - application/json
+      description: create a new user
+      parameters:
+      - description: user
+        in: body
+        name: user
+        schema:
+          $ref: '#/definitions/models.CreateUser'
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: Created
+          schema:
+            $ref: '#/definitions/models.User'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/models.Response'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/models.Response'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/models.Response'
+      summary: Creates a new user
+      tags:
+      - user
+  /user/{id}:
+    delete:
+      consumes:
+      - application/json
+      description: delete user
+      parameters:
+      - description: user_id
+        in: path
+        name: id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/models.Response'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/models.Response'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/models.Response'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/models.Response'
+      summary: Delete user
+      tags:
+      - user
+    get:
+      consumes:
+      - application/json
+      description: get user by ID
+      parameters:
+      - description: user
+        in: path
+        name: id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/models.User'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/models.Response'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/models.Response'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/models.Response'
+      summary: Gets user
+      tags:
+      - user
+    patch:
+      consumes:
+      - application/json
+      description: update user password
+      parameters:
+      - description: user_id
+        in: path
+        name: id
+        required: true
+        type: string
+      - description: user
+        in: body
+        name: user
+        required: true
+        schema:
+          $ref: '#/definitions/models.UpdateUserPassword'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/models.Response'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/models.Response'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/models.Response'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/models.Response'
+      summary: Update user password
+      tags:
+      - user
+    put:
+      consumes:
+      - application/json
+      description: update user
+      parameters:
+      - description: user_id
+        in: path
+        name: id
+        required: true
+        type: string
+      - description: user
+        in: body
+        name: user
+        required: true
+        schema:
+          $ref: '#/definitions/models.UpdateUser'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/models.User'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/models.Response'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/models.Response'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/models.Response'
+      summary: Update user
+      tags:
+      - user
+  /users:
+    get:
+      consumes:
+      - application/json
+      description: get user list
+      parameters:
+      - description: page
+        in: query
+        name: page
+        type: string
+      - description: limit
+        in: query
+        name: limit
+        type: string
+      - description: search
+        in: query
+        name: search
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/models.UsersResponse'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/models.Response'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/models.Response'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/models.Response'
+      summary: Get user list
+      tags:
+      - user
+securityDefinitions:
+  ApiKeyAuth:
+    in: header
+    name: Authorization
+    type: apiKey
+swagger: "2.0"

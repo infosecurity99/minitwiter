@@ -2,6 +2,7 @@ package postgres
 
 import (
 	"context"
+	"errors"
 	"fmt"
 	"test/api/models"
 	"test/pkg/logger"
@@ -24,6 +25,12 @@ func NewFollowersRepo(db *pgxpool.Pool, log logger.ILogger) storage.IFollowersSt
 }
 
 func (b *followerRepo) Create(ctx context.Context, follower models.CreateFollower) (string, error) {
+	if follower.UserID == follower.FollowerUserID {
+		err := errors.New("users cannot follow themselves")
+		b.log.Error("validation error", logger.Error(err))
+		return "", err
+	}
+
 	id := uuid.New()
 
 	query := `INSERT INTO followers (follower_id, user_id, follower_user_id) VALUES ($1, $2, $3)`

@@ -16,39 +16,35 @@ func NewlikesService(storage storage.IStorage, log logger.ILogger) likesService 
 	return likesService{storage: storage, log: log}
 }
 
-func (t likesService) Create(ctx context.Context, tweet models.CreateTweet) (models.Tweet, error) {
-	t.log.Info("likesService create service layer", logger.Any("likesService", tweet))
+func (l likesService) Create(ctx context.Context, like models.CreateLike) (models.Like, error) {
+	l.log.Info("likesService create service layer", logger.Any("like", like))
 
-	id, err := t.storage.Tweets().Create(ctx, tweet)
+	id, err := l.storage.Likes().Create(ctx, like)
 	if err != nil {
-		t.log.Error("error in service layer while creating tweet", logger.Error(err))
-		return models.Tweet{}, err
+		l.log.Error("error in service layer while creating like", logger.Error(err))
+		return models.Like{}, err
 	}
 
-	createdTweet, err := t.storage.Tweets().GetByID(ctx, models.PrimaryKey{ID: id})
+	createdLike, err := l.storage.Likes().GetByID(ctx, models.PrimaryKey{ID: id})
 	if err != nil {
-		t.log.Error("error in service layer while getting tweet by id", logger.Error(err))
-		return models.Tweet{}, err
+		l.log.Error("error in service layer while getting like by id", logger.Error(err))
+		return models.Like{}, err
 	}
 
-	return createdTweet, nil
+	return createdLike, nil
 }
 
-func (t likesService) Get(ctx context.Context, id string) (models.Tweet, error) {
-	tweet, err := t.storage.Tweets().GetByID(ctx, models.PrimaryKey{ID: id})
+func (l likesService) Get(ctx context.Context, id string) (models.Like, error) {
+	like, err := l.storage.Likes().GetByID(ctx, models.PrimaryKey{ID: id})
 	if err != nil {
-		t.log.Error("error in service layer while getting tweet by id", logger.Error(err))
-		return models.Tweet{}, err
+		l.log.Error("error in service layer while getting like by id", logger.Error(err))
+		return models.Like{}, err
 	}
 
-	return tweet, nil
+	return like, nil
 }
 
-
-
-
-
-func (t likesService) Delete(ctx context.Context, key models.PrimaryKey) error {
-	err := t.storage.Tweets().Delete(ctx, key)
+func (l likesService) Delete(ctx context.Context, key models.PrimaryKey) error {
+	err := l.storage.Likes().Delete(ctx, key)
 	return err
 }
