@@ -62,6 +62,10 @@ func New(services service.IServiceManager, log logger.ILogger) *gin.Engine {
 		r.GET("/followers", h.GetFollowerList)
 		r.PUT("/follower/:id", h.DeleteFollower)
 
+		//retweets  endpoints
+		r.POST("/retweet", h.CreateRetweet)
+		r.DELETE("/retweet/:id", h.DeleteRetweet)
+
 		r.GET("/swagger/*any", ginSwagger.WrapHandler(swaggerFiles.Handler))
 	}
 
