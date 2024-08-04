@@ -3,7 +3,6 @@ package handler
 import (
 	"context"
 	"net/http"
-	"strconv"
 	"test/api/models"
 	"time"
 
@@ -60,52 +59,6 @@ func (h Handler) GetLike(c *gin.Context) {
 	resp, err := h.services.Likes().Get(ctx, uid)
 	if err != nil {
 		handleResponse(c, h.log, "error while getting like by id", http.StatusInternalServerError, err.Error())
-		return
-	}
-
-	handleResponse(c, h.log, "", http.StatusOK, resp)
-}
-
-// GetLikeList godoc
-// @Router       /likes [GET]
-// @Summary      Get list of likes
-// @Description  Get a list of likes
-// @Tags         like
-// @Accept       json
-// @Produce      json
-// @Param        page query string false "page"
-// @Param        limit query string false "limit"
-// @Success      200  {object}  models.LikesResponse
-// @Failure      400  {object}  models.Response
-// @Failure      500  {object}  models.Response
-func (h Handler) GetLikeList(c *gin.Context) {
-	var (
-		page, limit int
-		err         error
-	)
-
-	pageStr := c.DefaultQuery("page", "1")
-	page, err = strconv.Atoi(pageStr)
-	if err != nil {
-		handleResponse(c, h.log, "error while parsing page", http.StatusBadRequest, err.Error())
-		return
-	}
-
-	limitStr := c.DefaultQuery("limit", "10")
-	limit, err = strconv.Atoi(limitStr)
-	if err != nil {
-		handleResponse(c, h.log, "error while parsing limit", http.StatusBadRequest, err.Error())
-		return
-	}
-
-	ctx, cancel := context.WithTimeout(context.Background(), time.Second*5)
-	defer cancel()
-	resp, err := h.services.Likes().GetList(ctx, models.GetListRequest{
-		Page:  page,
-		Limit: limit,
-	})
-	if err != nil {
-		handleResponse(c, h.log, "error while getting list of likes", http.StatusInternalServerError, err.Error())
 		return
 	}
 

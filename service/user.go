@@ -21,7 +21,7 @@ func NewuserService(storage storage.IStorage, log logger.ILogger) userService {
 	return userService{storage: storage,log:  log}
 }
 
-func (u *userService) Create(ctx context.Context, createUser models.CreateUser) (string, error) {
+func (u userService) Create(ctx context.Context, createUser models.CreateUser) (string, error) {
 	u.log.Info("User create service layer", logger.Any("createUser", createUser))
 
 	password, err := security.HashPassword(createUser.Password)
@@ -46,11 +46,11 @@ func (u *userService) Create(ctx context.Context, createUser models.CreateUser) 
 	return user.ID, nil
 }
 
-func (u *userService) GetByID(ctx context.Context, id models.PrimaryKey) (models.User, error) {
+func (u userService) GetByID(ctx context.Context, id models.PrimaryKey) (models.User, error) {
 	return u.storage.User().GetByID(ctx, id)
 }
 
-func (u *userService) GetList(ctx context.Context, request models.GetListRequest) (models.UsersResponse, error) {
+func (u userService) GetList(ctx context.Context, request models.GetListRequest) (models.UsersResponse, error) {
 	u.log.Info("Get user list service layer", logger.Any("request", request))
 
 	usersResponse, err := u.storage.User().GetList(ctx, request)
@@ -64,7 +64,7 @@ func (u *userService) GetList(ctx context.Context, request models.GetListRequest
 	return usersResponse, nil
 }
 
-func (u *userService) Update(ctx context.Context, updateUser models.UpdateUser) (models.User, error) {
+func (u userService) Update(ctx context.Context, updateUser models.UpdateUser) (models.User, error) {
 	if _, err := u.storage.User().Update(ctx, updateUser); err != nil {
 		u.log.Error("Error while updating user", logger.Error(err))
 		return models.User{}, err
@@ -79,7 +79,7 @@ func (u *userService) Update(ctx context.Context, updateUser models.UpdateUser) 
 	return user, nil
 }
 
-func (u *userService) Delete(ctx context.Context, key models.PrimaryKey) error {
+func (u userService) Delete(ctx context.Context, key models.PrimaryKey) error {
 	err := u.storage.User().Delete(ctx, key)
 	if err != nil {
 		u.log.Error("Error while deleting user", logger.Error(err))
@@ -87,7 +87,7 @@ func (u *userService) Delete(ctx context.Context, key models.PrimaryKey) error {
 	return err
 }
 
-func (u *userService) UpdatePassword(ctx context.Context, request models.UpdateUserPassword) error {
+func (u userService) UpdatePassword(ctx context.Context, request models.UpdateUserPassword) error {
 	oldPasswordHash, err := u.storage.User().GetPassword(ctx, models.PrimaryKey{})
 	if err != nil {
 		u.log.Error("Error while retrieving current password hash", logger.Error(err))
@@ -121,7 +121,7 @@ func (u *userService) UpdatePassword(ctx context.Context, request models.UpdateU
 	return nil
 }
 
-func (u *userService) GetAdminCredentialsByLogin(ctx context.Context, login string) (models.User, error) {
+func (u userService) GetAdminCredentialsByLogin(ctx context.Context, login string) (models.User, error) {
 	user, err := u.storage.User().GetAdminCredentialsByLogin(ctx, login)
 	if err != nil {
 		u.log.Error("Error while retrieving admin credentials by login", logger.Error(err))
@@ -130,7 +130,7 @@ func (u *userService) GetAdminCredentialsByLogin(ctx context.Context, login stri
 	return user, nil
 }
 
-func (u *userService) GetCustomerCredentialsByLogin(ctx context.Context, login string) (models.User, error) {
+func (u userService) GetCustomerCredentialsByLogin(ctx context.Context, login string) (models.User, error) {
 	user, err := u.storage.User().GetCustomerCredentialsByLogin(ctx, login)
 	if err != nil {
 		u.log.Error("Error while retrieving customer credentials by login", logger.Error(err))
@@ -138,7 +138,7 @@ func (u *userService) GetCustomerCredentialsByLogin(ctx context.Context, login s
 	}
 	return user, nil
 }
-func (u *userService) GetPassword(ctx context.Context, id models.PrimaryKey) (string, error) {
+func (u userService) GetPassword(ctx context.Context, id models.PrimaryKey) (string, error) {
     user, err := u.storage.User().GetByID(ctx, id)
     if err != nil {
         u.log.Error("Error while retrieving user", logger.Error(err))

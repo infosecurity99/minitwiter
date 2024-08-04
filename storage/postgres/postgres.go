@@ -48,7 +48,7 @@ func New(ctx context.Context, cfg config.Config, log logger.ILogger) (storage.IS
 	}
 
 	//migration
-	m, err := migrate.New("file://migrations/postgres/", url)
+	m, err := migrate.New("file:///home/zarif/Desktop/minitwiter/migrations/postgres", url)
 	if err != nil {
 		log.Error("error while migrating", logger.Error(err))
 		return nil, err

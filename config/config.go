@@ -34,14 +34,12 @@ func Load() Config {
 	cfg.PostgresPort = cast.ToString(getOrReturnDefault("POSTGRES_PORT", "5432"))
 	cfg.PostgresUser = cast.ToString(getOrReturnDefault("POSTGRES_USER", "admin"))
 	cfg.PostgresPassword = cast.ToString(getOrReturnDefault("POSTGRES_PASSWORD", "1999"))
-	cfg.PostgresDB = cast.ToString(getOrReturnDefault("POSTGRES_DB", "password"))
+	cfg.PostgresDB = cast.ToString(getOrReturnDefault("POSTGRES_DB", "twiter"))
 
-	cfg.ServiceName = cast.ToString(getOrReturnDefault("SERVICE_NAME", "store"))
+	cfg.ServiceName = cast.ToString(getOrReturnDefault("SERVICE_NAME", "minitwiter"))
 	cfg.LoggerLevel = cast.ToString(getOrReturnDefault("LOGGER_LEVEL", "debug"))
 
-	cfg.RedisHost = cast.ToString(getOrReturnDefault("REDIS_HOST", "localhost"))
-	cfg.RedisPort = cast.ToString(getOrReturnDefault("REDIS_PORT", "6379"))
-	cfg.RedisPassword = cast.ToString(getOrReturnDefault("REDIS_PASSWORD", "password"))
+	
 
 	return cfg
 }

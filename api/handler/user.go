@@ -3,12 +3,13 @@ package handler
 import (
 	"context"
 	"errors"
-	"github.com/gin-gonic/gin"
-	"github.com/google/uuid"
 	"net/http"
 	"strconv"
 	"test/api/models"
 	"time"
+
+	"github.com/gin-gonic/gin"
+	"github.com/google/uuid"
 )
 
 // CreateUser godoc
@@ -33,6 +34,7 @@ func (h Handler) CreateUser(c *gin.Context) {
 
 	ctx, cancel := context.WithTimeout(context.Background(), time.Second*5)
 	defer cancel()
+
 	resp, err := h.services.User().Create(ctx, createUser)
 	if err != nil {
 		handleResponse(c, h.log, "error while creating user", http.StatusInternalServerError, err.Error())
@@ -67,7 +69,7 @@ func (h Handler) GetUser(c *gin.Context) {
 
 	ctx, cancel := context.WithTimeout(context.Background(), time.Second*5)
 	defer cancel()
-	user, err := h.services.User().GetUser(ctx, models.PrimaryKey{
+	user, err := h.services.User().GetByID(ctx, models.PrimaryKey{
 		ID: id.String(),
 	})
 	if err != nil {
@@ -117,7 +119,7 @@ func (h Handler) GetUserList(c *gin.Context) {
 
 	ctx, cancel := context.WithTimeout(context.Background(), time.Second*5)
 	defer cancel()
-	resp, err := h.services.User().GetUsers(ctx, models.GetListRequest{
+	resp, err := h.services.User().GetList(ctx, models.GetListRequest{
 		Page:   page,
 		Limit:  limit,
 		Search: search,

@@ -53,8 +53,7 @@ func New(services service.IServiceManager, log logger.ILogger) *gin.Engine {
 
 		// likes endpoints
 		r.POST("/like", h.CreateLike)
-		r.GET("/like/:id", h.GetLikeList)
-		r.GET("/likes", h.GetLikeList)
+		r.GET("/like/:id", h.GetLike)
 		r.DELETE("/like", h.DeleteLike)
 
 		// followers endpoints

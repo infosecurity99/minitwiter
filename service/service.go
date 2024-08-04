@@ -29,10 +29,7 @@ func New(storage storage.IStorage, log logger.ILogger) Service {
 	services.followersService = NewfollowersService(storage, log)
 	services.likesService = NewlikesService(storage, log)
 
-
-
 	services.userService= NewuserService(storage, log) 
-
 	services.authService = NewAuthService(storage, log)
 	return services
 }

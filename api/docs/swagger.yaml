@@ -13,183 +13,42 @@ definitions:
       refresh_token:
         type: string
     type: object
-  models.Basket:
+  models.CreateFollower:
     properties:
-      created_at:
+      follower_user_id:
         type: string
-      customer_id:
-        type: string
-      id:
-        type: string
-      total_sum:
-        type: integer
-      updated_at:
+      user_id:
         type: string
     type: object
-  models.BasketProduct:
+  models.CreateLike:
     properties:
-      basket_id:
+      tweet_id:
         type: string
-      created_at:
-        type: string
-      id:
-        type: string
-      product_id:
-        type: string
-      quantity:
-        type: integer
-      updated_at:
+      user_id:
         type: string
     type: object
-  models.BasketProductResponse:
+  models.CreateTweet:
     properties:
-      basketProducts:
-        items:
-          $ref: '#/definitions/models.BasketProduct'
-        type: array
-      count:
-        type: integer
-    type: object
-  models.BasketResponse:
-    properties:
-      baskets:
-        items:
-          $ref: '#/definitions/models.Basket'
-        type: array
-      count:
-        type: integer
-    type: object
-  models.Branch:
-    properties:
-      address:
+      content:
         type: string
-      created_at:
+      image_url:
         type: string
-      id:
+      user_id:
         type: string
-      name:
+      video_url:
         type: string
-      phone_number:
-        type: string
-      updated_at:
-        type: string
-    type: object
-  models.BranchResponse:
-    properties:
-      branches:
-        items:
-          $ref: '#/definitions/models.Branch'
-        type: array
-      count:
-        type: integer
-    type: object
-  models.Category:
-    properties:
-      created_at:
-        type: string
-      id:
-        type: string
-      name:
-        type: string
-      updated_at:
-        type: string
-    type: object
-  models.CategoryResponse:
-    properties:
-      category:
-        items:
-          $ref: '#/definitions/models.Category'
-        type: array
-      count:
-        type: integer
-    type: object
-  models.Check:
-    properties:
-      products:
-        items:
-          $ref: '#/definitions/models.Product'
-        type: array
-      total_sum:
-        type: integer
-    type: object
-  models.CreateBasket:
-    properties:
-      customer_id:
-        type: string
-      total_sum:
-        type: integer
-    type: object
-  models.CreateBasketProduct:
-    properties:
-      basket_id:
-        type: string
-      product_id:
-        type: string
-      quantity:
-        type: integer
-    type: object
-  models.CreateBranch:
-    properties:
-      address:
-        type: string
-      name:
-        type: string
-      phone_number:
-        type: string
-    type: object
-  models.CreateCategory:
-    properties:
-      name:
-        type: string
-    type: object
-  models.CreateIncomeProduct:
-    properties:
-      income_id:
-        type: string
-      price:
-        type: integer
-      product_id:
-        type: string
-      quantity:
-        type: integer
-    type: object
-  models.CreateIncomeProducts:
-    properties:
-      income_products:
-        items:
-          $ref: '#/definitions/models.CreateIncomeProduct'
-        type: array
-    type: object
-  models.CreateProduct:
-    properties:
-      branch_id:
-        type: string
-      category_id:
-        type: string
-      name:
-        type: string
-      original_price:
-        type: integer
-      price:
-        type: integer
-      quantity:
-        type: integer
     type: object
   models.CreateUser:
     properties:
-      branch_id:
+      bio:
         type: string
-      cash:
-        type: integer
-      full_name:
-        type: string
-      login:
+      name:
         type: string
       password:
         type: string
-      phone:
+      profile_picture:
         type: string
-      user_type:
+      username:
         type: string
     type: object
   models.CustomerLoginRequest:
@@ -199,88 +58,44 @@ definitions:
       password:
         type: string
     type: object
-  models.DeleteIncomeProducts:
+  models.Follower:
     properties:
-      ids:
-        items:
-          $ref: '#/definitions/models.PrimaryKey'
-        type: array
+      created_at:
+        type: string
+      follower_id:
+        type: string
+      follower_user_id:
+        type: string
+      user_id:
+        type: string
     type: object
-  models.Income:
-    properties:
-      external_id:
-        type: string
-      id:
-        type: string
-      total_sum:
-        type: integer
-    type: object
-  models.IncomeProduct:
-    properties:
-      id:
-        type: string
-      income_id:
-        type: string
-      price:
-        type: integer
-      product_id:
-        type: string
-      quantity:
-        type: integer
-    type: object
-  models.IncomesResponse:
+  models.FollowersResponse:
     properties:
       count:
         type: integer
-      incomes:
+      followers:
         items:
-          $ref: '#/definitions/models.Income'
+          $ref: '#/definitions/models.Follower'
         type: array
     type: object
-  models.PrimaryKey:
+  models.Like:
     properties:
-      id:
-        type: string
-    type: object
-  models.Product:
-    properties:
-      branch_id:
-        type: string
-      category_id:
-        type: string
       created_at:
         type: string
-      id:
+      like_id:
         type: string
-      name:
+      tweet_id:
         type: string
-      original_price:
-        type: integer
-      price:
-        type: integer
-      quantity:
-        type: integer
-      updated_at:
+      user_id:
         type: string
     type: object
-  models.ProductReport:
+  models.LikesResponse:
     properties:
-      price:
+      count:
         type: integer
-      product_name:
-        type: string
-      quantity:
-        type: integer
-      total_price:
-        type: integer
-    type: object
-  models.ProductReportList:
-    properties:
-      overall_price:
-        type: integer
-      products:
+      likes:
         items:
-          $ref: '#/definitions/models.ProductReport'
+          $ref: '#/definitions/models.Like'
         type: array
     type: object
   models.Response:
@@ -291,72 +106,50 @@ definitions:
       statusCode:
         type: integer
     type: object
-  models.SellRequest:
+  models.Tweet:
     properties:
-      basket_id:
+      content:
         type: string
-      branch_id:
+      created_at:
         type: string
-      products:
-        additionalProperties:
-          type: integer
-        type: object
+      id:
+        type: string
+      image_url:
+        type: string
+      updated_at:
+        type: string
+      user_id:
+        type: string
+      video_url:
+        type: string
     type: object
-  models.UpdateBasket:
+  models.TweetsResponse:
     properties:
-      customer_id:
-        type: string
-      total_sum:
+      count:
         type: integer
-    type: object
-  models.UpdateBasketProduct:
-    properties:
-      product_id:
-        type: string
-      quantity:
-        type: integer
-    type: object
-  models.UpdateBranch:
-    properties:
-      address:
-        type: string
-      name:
-        type: string
-      phone_number:
-        type: string
-    type: object
-  models.UpdateCategory:
-    properties:
-      name:
-        type: string
-    type: object
-  models.UpdateIncomeProducts:
-    properties:
-      incomeProducts:
+      tweets:
         items:
-          $ref: '#/definitions/models.IncomeProduct'
+          $ref: '#/definitions/models.Tweet'
         type: array
     type: object
-  models.UpdateProduct:
+  models.UpdateTweet:
     properties:
-      category_id:
+      content:
         type: string
-      name:
+      id:
         type: string
-      original_price:
-        type: integer
-      price:
-        type: integer
-      quantity:
-        type: integer
+      image_url:
+        type: string
+      video_url:
+        type: string
     type: object
   models.UpdateUser:
     properties:
-      cash:
-        type: integer
-      full_name:
+      bio:
         type: string
-      phone:
+      name:
+        type: string
+      profile_picture:
         type: string
     type: object
   models.UpdateUserPassword:
@@ -368,25 +161,19 @@ definitions:
     type: object
   models.User:
     properties:
-      branch_id:
+      bio:
         type: string
-      cash:
-        type: integer
       created_at:
-        type: string
-      full_name:
         type: string
       id:
         type: string
-      login:
+      name:
         type: string
-      password:
-        type: string
-      phone:
+      profile_picture:
         type: string
       updated_at:
         type: string
-      user_type:
+      username:
         type: string
     type: object
   models.UsersResponse:
@@ -456,7 +243,7 @@ paths:
         "201":
           description: Created
           schema:
-            $ref: '#/definitions/models.Basket'
+            $ref: '#/definitions/models.Like'
         "400":
           description: Bad Request
           schema:
@@ -472,46 +259,43 @@ paths:
       summary: Customer login
       tags:
       - auth
-  /basket:
+  /follower:
     post:
       consumes:
       - application/json
-      description: create a new basket
+      description: Create a new follower relationship between two users
       parameters:
-      - description: basket
+      - description: follower
         in: body
-        name: basket
+        name: follower
+        required: true
         schema:
-          $ref: '#/definitions/models.CreateBasket'
+          $ref: '#/definitions/models.CreateFollower'
       produces:
       - application/json
       responses:
         "201":
           description: Created
           schema:
-            $ref: '#/definitions/models.Basket'
+            $ref: '#/definitions/models.Follower'
         "400":
           description: Bad Request
-          schema:
-            $ref: '#/definitions/models.Response'
-        "404":
-          description: Not Found
           schema:
             $ref: '#/definitions/models.Response'
         "500":
           description: Internal Server Error
           schema:
             $ref: '#/definitions/models.Response'
-      summary: Creates a new basket
+      summary: Creates a new follower relationship
       tags:
-      - basket
-  /basket/{id}:
+      - follower
+  /follower/{id}:
     delete:
       consumes:
       - application/json
-      description: delete basket
+      description: Delete a follower relationship by ID
       parameters:
-      - description: basket_id
+      - description: follower_id
         in: path
         name: id
         required: true
@@ -519,31 +303,27 @@ paths:
       produces:
       - application/json
       responses:
-        "201":
-          description: Created
+        "200":
+          description: OK
           schema:
             $ref: '#/definitions/models.Response'
         "400":
           description: Bad Request
           schema:
             $ref: '#/definitions/models.Response'
-        "404":
-          description: Not Found
-          schema:
-            $ref: '#/definitions/models.Response'
         "500":
           description: Internal Server Error
           schema:
             $ref: '#/definitions/models.Response'
-      summary: Delete basket
+      summary: Delete follower relationship
       tags:
-      - basket
+      - follower
     get:
       consumes:
       - application/json
-      description: get basket by id
+      description: Get a follower relationship by its ID
       parameters:
-      - description: basket_id
+      - description: follower_id
         in: path
         name: id
         required: true
@@ -551,10 +331,10 @@ paths:
       produces:
       - application/json
       responses:
-        "201":
-          description: Created
+        "200":
+          description: OK
           schema:
-            $ref: '#/definitions/models.Basket'
+            $ref: '#/definitions/models.Follower'
         "400":
           description: Bad Request
           schema:
@@ -567,286 +347,282 @@ paths:
           description: Internal Server Error
           schema:
             $ref: '#/definitions/models.Response'
-      summary: Get basket by id
+      summary: Get follower by ID
       tags:
-      - basket
+      - follower
+  /followers:
+    get:
+      consumes:
+      - application/json
+      description: Get a list of follower relationships
+      parameters:
+      - description: page
+        in: query
+        name: page
+        type: string
+      - description: limit
+        in: query
+        name: limit
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/models.FollowersResponse'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/models.Response'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/models.Response'
+      summary: Get list of followers
+      tags:
+      - follower
+  /like:
+    post:
+      consumes:
+      - application/json
+      description: Create a new like for a tweet
+      parameters:
+      - description: like
+        in: body
+        name: like
+        required: true
+        schema:
+          $ref: '#/definitions/models.CreateLike'
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: Created
+          schema:
+            $ref: '#/definitions/models.Like'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/models.Response'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/models.Response'
+      summary: Creates a new like
+      tags:
+      - like
+  /like/{id}:
+    delete:
+      consumes:
+      - application/json
+      description: Delete a like by ID
+      parameters:
+      - description: like_id
+        in: path
+        name: id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/models.Response'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/models.Response'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/models.Response'
+      summary: Delete like
+      tags:
+      - like
+    get:
+      consumes:
+      - application/json
+      description: Get a like by its ID
+      parameters:
+      - description: like_id
+        in: path
+        name: id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/models.Like'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/models.Response'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/models.Response'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/models.Response'
+      summary: Get like by ID
+      tags:
+      - like
+  /likes:
+    get:
+      consumes:
+      - application/json
+      description: Get a list of likes
+      parameters:
+      - description: page
+        in: query
+        name: page
+        type: string
+      - description: limit
+        in: query
+        name: limit
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/models.LikesResponse'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/models.Response'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/models.Response'
+      summary: Get list of likes
+      tags:
+      - like
+  /tweet:
+    post:
+      consumes:
+      - application/json
+      description: Create a new tweet
+      parameters:
+      - description: tweet
+        in: body
+        name: tweet
+        required: true
+        schema:
+          $ref: '#/definitions/models.CreateTweet'
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: Created
+          schema:
+            $ref: '#/definitions/models.Tweet'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/models.Response'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/models.Response'
+      summary: Creates a new tweet
+      tags:
+      - tweet
+  /tweet/{id}:
+    delete:
+      consumes:
+      - application/json
+      description: Delete a tweet
+      parameters:
+      - description: tweet_id
+        in: path
+        name: id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/models.Response'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/models.Response'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/models.Response'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/models.Response'
+      summary: Delete tweet
+      tags:
+      - tweet
+    get:
+      consumes:
+      - application/json
+      description: Get tweet by ID
+      parameters:
+      - description: tweet_id
+        in: path
+        name: id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/models.Tweet'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/models.Response'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/models.Response'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/models.Response'
+      summary: Get tweet
+      tags:
+      - tweet
     put:
       consumes:
       - application/json
-      description: update basket
+      description: Update a tweet
       parameters:
-      - description: basket_id
+      - description: tweet_id
         in: path
         name: id
         required: true
         type: string
-      - description: basket
+      - description: tweet
         in: body
-        name: basket
-        schema:
-          $ref: '#/definitions/models.UpdateBasket'
-      produces:
-      - application/json
-      responses:
-        "201":
-          description: Created
-          schema:
-            $ref: '#/definitions/models.Basket'
-        "400":
-          description: Bad Request
-          schema:
-            $ref: '#/definitions/models.Response'
-        "404":
-          description: Not Found
-          schema:
-            $ref: '#/definitions/models.Response'
-        "500":
-          description: Internal Server Error
-          schema:
-            $ref: '#/definitions/models.Response'
-      summary: Update basket
-      tags:
-      - basket
-  /basketProduct:
-    post:
-      consumes:
-      - application/json
-      description: create a new basketProduct
-      parameters:
-      - description: basket
-        in: body
-        name: basket
-        schema:
-          $ref: '#/definitions/models.CreateBasketProduct'
-      produces:
-      - application/json
-      responses:
-        "201":
-          description: Created
-          schema:
-            $ref: '#/definitions/models.BasketProduct'
-        "400":
-          description: Bad Request
-          schema:
-            $ref: '#/definitions/models.Response'
-        "404":
-          description: Not Found
-          schema:
-            $ref: '#/definitions/models.Response'
-        "500":
-          description: Internal Server Error
-          schema:
-            $ref: '#/definitions/models.Response'
-      summary: Creates a new basketProduct
-      tags:
-      - basketProduct
-  /basketProduct/{id}:
-    delete:
-      consumes:
-      - application/json
-      description: delete basketProduct
-      parameters:
-      - description: basketProduct_id
-        in: path
-        name: id
+        name: tweet
         required: true
-        type: string
-      produces:
-      - application/json
-      responses:
-        "201":
-          description: Created
-          schema:
-            $ref: '#/definitions/models.Response'
-        "400":
-          description: Bad Request
-          schema:
-            $ref: '#/definitions/models.Response'
-        "404":
-          description: Not Found
-          schema:
-            $ref: '#/definitions/models.Response'
-        "500":
-          description: Internal Server Error
-          schema:
-            $ref: '#/definitions/models.Response'
-      summary: Delete basketProduct
-      tags:
-      - basketProduct
-    get:
-      consumes:
-      - application/json
-      description: get basketProduct by id
-      parameters:
-      - description: basketProduct_id
-        in: path
-        name: id
-        required: true
-        type: string
-      produces:
-      - application/json
-      responses:
-        "201":
-          description: Created
-          schema:
-            $ref: '#/definitions/models.BasketProduct'
-        "400":
-          description: Bad Request
-          schema:
-            $ref: '#/definitions/models.Response'
-        "404":
-          description: Not Found
-          schema:
-            $ref: '#/definitions/models.Response'
-        "500":
-          description: Internal Server Error
-          schema:
-            $ref: '#/definitions/models.Response'
-      summary: Get basketProduct by id
-      tags:
-      - basketProduct
-    put:
-      consumes:
-      - application/json
-      description: update basketProduct
-      parameters:
-      - description: basketProduct_id
-        in: path
-        name: id
-        required: true
-        type: string
-      - description: basketProduct
-        in: body
-        name: basketProduct
         schema:
-          $ref: '#/definitions/models.UpdateBasketProduct'
-      produces:
-      - application/json
-      responses:
-        "201":
-          description: Created
-          schema:
-            $ref: '#/definitions/models.BasketProduct'
-        "400":
-          description: Bad Request
-          schema:
-            $ref: '#/definitions/models.Response'
-        "404":
-          description: Not Found
-          schema:
-            $ref: '#/definitions/models.Response'
-        "500":
-          description: Internal Server Error
-          schema:
-            $ref: '#/definitions/models.Response'
-      summary: Update basketProduct
-      tags:
-      - basketProduct
-  /basketProducts:
-    get:
-      consumes:
-      - application/json
-      description: get basket list
-      parameters:
-      - description: page
-        in: query
-        name: page
-        type: string
-      - description: limit
-        in: query
-        name: limit
-        type: string
-      - description: search
-        in: query
-        name: search
-        type: string
-      - description: basket_id
-        in: query
-        name: basket_id
-        type: string
-      produces:
-      - application/json
-      responses:
-        "201":
-          description: Created
-          schema:
-            $ref: '#/definitions/models.BasketProductResponse'
-        "400":
-          description: Bad Request
-          schema:
-            $ref: '#/definitions/models.Response'
-        "404":
-          description: Not Found
-          schema:
-            $ref: '#/definitions/models.Response'
-        "500":
-          description: Internal Server Error
-          schema:
-            $ref: '#/definitions/models.Response'
-      summary: Get basket list
-      tags:
-      - basketProduct
-  /baskets:
-    get:
-      consumes:
-      - application/json
-      description: get basket list
-      operationId: some id
-      parameters:
-      - description: page
-        in: query
-        name: page
-        type: string
-      - description: limit
-        in: query
-        name: limit
-        type: string
-      - description: search
-        in: query
-        name: search
-        type: string
-      produces:
-      - application/json
-      responses:
-        "201":
-          description: Created
-          schema:
-            $ref: '#/definitions/models.BasketResponse'
-        "400":
-          description: Bad Request
-          schema:
-            $ref: '#/definitions/models.Response'
-        "404":
-          description: Not Found
-          schema:
-            $ref: '#/definitions/models.Response'
-        "500":
-          description: Internal Server Error
-          schema:
-            $ref: '#/definitions/models.Response'
-      security:
-      - ApiKeyAuth: []
-      summary: Get basket list
-      tags:
-      - basket
-  /branch:
-    post:
-      consumes:
-      - application/json
-      description: create a new branch
-      parameters:
-      - description: branch
-        in: body
-        name: branch
-        schema:
-          $ref: '#/definitions/models.CreateBranch'
+          $ref: '#/definitions/models.UpdateTweet'
       produces:
       - application/json
       responses:
         "200":
           description: OK
           schema:
-            $ref: '#/definitions/models.Branch'
+            $ref: '#/definitions/models.Tweet'
         "400":
           description: Bad Request
           schema:
@@ -859,116 +635,14 @@ paths:
           description: Internal Server Error
           schema:
             $ref: '#/definitions/models.Response'
-      summary: Create a new branch
+      summary: Update tweet
       tags:
-      - branch
-  /branch/{id}:
-    delete:
-      consumes:
-      - application/json
-      description: delete branch
-      parameters:
-      - description: branch_id
-        in: path
-        name: id
-        required: true
-        type: string
-      produces:
-      - application/json
-      responses:
-        "200":
-          description: OK
-          schema:
-            $ref: '#/definitions/models.Response'
-        "400":
-          description: Bad Request
-          schema:
-            $ref: '#/definitions/models.Response'
-        "404":
-          description: Not Found
-          schema:
-            $ref: '#/definitions/models.Response'
-        "500":
-          description: Internal Server Error
-          schema:
-            $ref: '#/definitions/models.Response'
-      summary: Delete branch
-      tags:
-      - branch
+      - tweet
+  /tweets:
     get:
       consumes:
       - application/json
-      description: get branch by id
-      parameters:
-      - description: branch_id
-        in: path
-        name: id
-        required: true
-        type: string
-      produces:
-      - application/json
-      responses:
-        "200":
-          description: OK
-          schema:
-            $ref: '#/definitions/models.Branch'
-        "400":
-          description: Bad Request
-          schema:
-            $ref: '#/definitions/models.Response'
-        "404":
-          description: Not Found
-          schema:
-            $ref: '#/definitions/models.Response'
-        "500":
-          description: Internal Server Error
-          schema:
-            $ref: '#/definitions/models.Response'
-      summary: Get branch by id
-      tags:
-      - branch
-    put:
-      consumes:
-      - application/json
-      description: update branch
-      parameters:
-      - description: branch_id
-        in: path
-        name: id
-        required: true
-        type: string
-      - description: branch
-        in: body
-        name: branch
-        schema:
-          $ref: '#/definitions/models.UpdateBranch'
-      produces:
-      - application/json
-      responses:
-        "200":
-          description: OK
-          schema:
-            $ref: '#/definitions/models.Branch'
-        "400":
-          description: Bad Request
-          schema:
-            $ref: '#/definitions/models.Response'
-        "404":
-          description: Not Found
-          schema:
-            $ref: '#/definitions/models.Response'
-        "500":
-          description: Internal Server Error
-          schema:
-            $ref: '#/definitions/models.Response'
-      summary: Update branch
-      tags:
-      - branch
-  /branches:
-    get:
-      consumes:
-      - application/json
-      description: get branch list
+      description: Get list of tweets
       parameters:
       - description: page
         in: query
@@ -988,7 +662,7 @@ paths:
         "200":
           description: OK
           schema:
-            $ref: '#/definitions/models.BranchResponse'
+            $ref: '#/definitions/models.TweetsResponse'
         "400":
           description: Bad Request
           schema:
@@ -1001,708 +675,9 @@ paths:
           description: Internal Server Error
           schema:
             $ref: '#/definitions/models.Response'
-      summary: Get branch list
+      summary: Get tweet list
       tags:
-      - branch
-  /categories:
-    get:
-      consumes:
-      - application/json
-      description: get category list
-      parameters:
-      - description: page
-        in: query
-        name: page
-        type: string
-      - description: limit
-        in: query
-        name: limit
-        type: string
-      - description: search
-        in: query
-        name: search
-        type: string
-      produces:
-      - application/json
-      responses:
-        "201":
-          description: Created
-          schema:
-            $ref: '#/definitions/models.CategoryResponse'
-        "400":
-          description: Bad Request
-          schema:
-            $ref: '#/definitions/models.Response'
-        "404":
-          description: Not Found
-          schema:
-            $ref: '#/definitions/models.Response'
-        "500":
-          description: Internal Server Error
-          schema:
-            $ref: '#/definitions/models.Response'
-      summary: Get category list
-      tags:
-      - category
-  /category:
-    post:
-      consumes:
-      - application/json
-      description: create a new category
-      parameters:
-      - description: category
-        in: body
-        name: category
-        schema:
-          $ref: '#/definitions/models.CreateCategory'
-      produces:
-      - application/json
-      responses:
-        "201":
-          description: Created
-          schema:
-            $ref: '#/definitions/models.Category'
-        "400":
-          description: Bad Request
-          schema:
-            $ref: '#/definitions/models.Response'
-        "404":
-          description: Not Found
-          schema:
-            $ref: '#/definitions/models.Response'
-        "500":
-          description: Internal Server Error
-          schema:
-            $ref: '#/definitions/models.Response'
-      summary: Creates a new category
-      tags:
-      - category
-  /category/{id}:
-    delete:
-      consumes:
-      - application/json
-      description: delete category
-      parameters:
-      - description: category_id
-        in: path
-        name: id
-        required: true
-        type: string
-      produces:
-      - application/json
-      responses:
-        "201":
-          description: Created
-          schema:
-            $ref: '#/definitions/models.Response'
-        "400":
-          description: Bad Request
-          schema:
-            $ref: '#/definitions/models.Response'
-        "404":
-          description: Not Found
-          schema:
-            $ref: '#/definitions/models.Response'
-        "500":
-          description: Internal Server Error
-          schema:
-            $ref: '#/definitions/models.Response'
-      summary: Delete category
-      tags:
-      - category
-    get:
-      consumes:
-      - application/json
-      description: get category by id
-      parameters:
-      - description: category_id
-        in: path
-        name: id
-        required: true
-        type: string
-      produces:
-      - application/json
-      responses:
-        "201":
-          description: Created
-          schema:
-            $ref: '#/definitions/models.Category'
-        "400":
-          description: Bad Request
-          schema:
-            $ref: '#/definitions/models.Response'
-        "404":
-          description: Not Found
-          schema:
-            $ref: '#/definitions/models.Response'
-        "500":
-          description: Internal Server Error
-          schema:
-            $ref: '#/definitions/models.Response'
-      summary: Get category by id
-      tags:
-      - category
-    put:
-      consumes:
-      - application/json
-      description: update category
-      parameters:
-      - description: category_id
-        in: path
-        name: id
-        required: true
-        type: string
-      - description: category
-        in: body
-        name: category
-        schema:
-          $ref: '#/definitions/models.UpdateCategory'
-      produces:
-      - application/json
-      responses:
-        "201":
-          description: Created
-          schema:
-            $ref: '#/definitions/models.Response'
-        "400":
-          description: Bad Request
-          schema:
-            $ref: '#/definitions/models.Response'
-        "404":
-          description: Not Found
-          schema:
-            $ref: '#/definitions/models.Response'
-        "500":
-          description: Internal Server Error
-          schema:
-            $ref: '#/definitions/models.Response'
-      summary: Update category
-      tags:
-      - category
-  /income:
-    post:
-      consumes:
-      - application/json
-      description: create a new income
-      produces:
-      - application/json
-      responses:
-        "201":
-          description: Created
-          schema:
-            $ref: '#/definitions/models.Income'
-        "400":
-          description: Bad Request
-          schema:
-            $ref: '#/definitions/models.Response'
-        "404":
-          description: Not Found
-          schema:
-            $ref: '#/definitions/models.Response'
-        "500":
-          description: Internal Server Error
-          schema:
-            $ref: '#/definitions/models.Response'
-      summary: Creates a new income
-      tags:
-      - income
-  /income/{id}:
-    delete:
-      consumes:
-      - application/json
-      description: delete income
-      parameters:
-      - description: income_id
-        in: path
-        name: id
-        required: true
-        type: string
-      produces:
-      - application/json
-      responses:
-        "201":
-          description: Created
-          schema:
-            $ref: '#/definitions/models.Response'
-        "400":
-          description: Bad Request
-          schema:
-            $ref: '#/definitions/models.Response'
-        "404":
-          description: Not Found
-          schema:
-            $ref: '#/definitions/models.Response'
-        "500":
-          description: Internal Server Error
-          schema:
-            $ref: '#/definitions/models.Response'
-      summary: Delete income
-      tags:
-      - income
-    get:
-      consumes:
-      - application/json
-      description: get income by id
-      parameters:
-      - description: income_id
-        in: path
-        name: id
-        required: true
-        type: string
-      produces:
-      - application/json
-      responses:
-        "201":
-          description: Created
-          schema:
-            $ref: '#/definitions/models.Income'
-        "400":
-          description: Bad Request
-          schema:
-            $ref: '#/definitions/models.Response'
-        "404":
-          description: Not Found
-          schema:
-            $ref: '#/definitions/models.Response'
-        "500":
-          description: Internal Server Error
-          schema:
-            $ref: '#/definitions/models.Response'
-      summary: Get income by id
-      tags:
-      - income
-  /income_products:
-    delete:
-      consumes:
-      - application/json
-      description: delete income products
-      parameters:
-      - description: ids
-        in: body
-        name: ids
-        schema:
-          $ref: '#/definitions/models.DeleteIncomeProducts'
-      produces:
-      - application/json
-      responses:
-        "201":
-          description: Created
-          schema:
-            $ref: '#/definitions/models.Response'
-        "400":
-          description: Bad Request
-          schema:
-            $ref: '#/definitions/models.Response'
-        "404":
-          description: Not Found
-          schema:
-            $ref: '#/definitions/models.Response'
-        "500":
-          description: Internal Server Error
-          schema:
-            $ref: '#/definitions/models.Response'
-      summary: Delete income products
-      tags:
-      - income_products
-    get:
-      consumes:
-      - application/json
-      description: get income products list
-      parameters:
-      - description: page
-        in: query
-        name: page
-        type: string
-      - description: limit
-        in: query
-        name: limit
-        type: string
-      - description: search
-        in: query
-        name: search
-        type: string
-      produces:
-      - application/json
-      responses:
-        "201":
-          description: Created
-          schema:
-            $ref: '#/definitions/models.IncomesResponse'
-        "400":
-          description: Bad Request
-          schema:
-            $ref: '#/definitions/models.Response'
-        "404":
-          description: Not Found
-          schema:
-            $ref: '#/definitions/models.Response'
-        "500":
-          description: Internal Server Error
-          schema:
-            $ref: '#/definitions/models.Response'
-      summary: Get income products list
-      tags:
-      - income_products
-    post:
-      consumes:
-      - application/json
-      description: create a new income products
-      parameters:
-      - description: income_products
-        in: body
-        name: income_products
-        schema:
-          $ref: '#/definitions/models.CreateIncomeProducts'
-      produces:
-      - application/json
-      responses:
-        "201":
-          description: Created
-          schema:
-            type: string
-        "400":
-          description: Bad Request
-          schema:
-            $ref: '#/definitions/models.Response'
-        "404":
-          description: Not Found
-          schema:
-            $ref: '#/definitions/models.Response'
-        "500":
-          description: Internal Server Error
-          schema:
-            $ref: '#/definitions/models.Response'
-      summary: Creates a new income products
-      tags:
-      - income_products
-    put:
-      consumes:
-      - application/json
-      description: update income products
-      parameters:
-      - description: income_products
-        in: body
-        name: income_products
-        schema:
-          $ref: '#/definitions/models.UpdateIncomeProducts'
-      produces:
-      - application/json
-      responses:
-        "201":
-          description: Created
-          schema:
-            $ref: '#/definitions/models.Response'
-        "400":
-          description: Bad Request
-          schema:
-            $ref: '#/definitions/models.Response'
-        "404":
-          description: Not Found
-          schema:
-            $ref: '#/definitions/models.Response'
-        "500":
-          description: Internal Server Error
-          schema:
-            $ref: '#/definitions/models.Response'
-      summary: Update income products
-      tags:
-      - income_products
-  /incomes:
-    get:
-      consumes:
-      - application/json
-      description: get incomes list
-      parameters:
-      - description: page
-        in: query
-        name: page
-        type: string
-      - description: limit
-        in: query
-        name: limit
-        type: string
-      - description: search
-        in: query
-        name: search
-        type: string
-      produces:
-      - application/json
-      responses:
-        "201":
-          description: Created
-          schema:
-            $ref: '#/definitions/models.IncomesResponse'
-        "400":
-          description: Bad Request
-          schema:
-            $ref: '#/definitions/models.Response'
-        "404":
-          description: Not Found
-          schema:
-            $ref: '#/definitions/models.Response'
-        "500":
-          description: Internal Server Error
-          schema:
-            $ref: '#/definitions/models.Response'
-      summary: Get incomes list
-      tags:
-      - income
-  /product:
-    post:
-      consumes:
-      - application/json
-      description: create a new product
-      parameters:
-      - description: product
-        in: body
-        name: product
-        schema:
-          $ref: '#/definitions/models.CreateProduct'
-      produces:
-      - application/json
-      responses:
-        "200":
-          description: OK
-          schema:
-            $ref: '#/definitions/models.Response'
-        "400":
-          description: Bad Request
-          schema:
-            $ref: '#/definitions/models.Response'
-        "404":
-          description: Not Found
-          schema:
-            $ref: '#/definitions/models.Response'
-        "500":
-          description: Internal Server Error
-          schema:
-            $ref: '#/definitions/models.Response'
-      summary: Create a new product
-      tags:
-      - product
-  /product/{id}:
-    delete:
-      consumes:
-      - application/json
-      description: delete product
-      parameters:
-      - description: product_id
-        in: path
-        name: id
-        required: true
-        type: string
-      produces:
-      - application/json
-      responses:
-        "200":
-          description: OK
-          schema:
-            $ref: '#/definitions/models.Response'
-        "400":
-          description: Bad Request
-          schema:
-            $ref: '#/definitions/models.Response'
-        "404":
-          description: Not Found
-          schema:
-            $ref: '#/definitions/models.Response'
-        "500":
-          description: Internal Server Error
-          schema:
-            $ref: '#/definitions/models.Response'
-      summary: Delete product
-      tags:
-      - product
-    get:
-      consumes:
-      - application/json
-      description: get product by id
-      parameters:
-      - description: product_id
-        in: path
-        name: id
-        required: true
-        type: string
-      produces:
-      - application/json
-      responses:
-        "200":
-          description: OK
-          schema:
-            $ref: '#/definitions/models.Product'
-        "400":
-          description: Bad Request
-          schema:
-            $ref: '#/definitions/models.Response'
-        "404":
-          description: Not Found
-          schema:
-            $ref: '#/definitions/models.Response'
-        "500":
-          description: Internal Server Error
-          schema:
-            $ref: '#/definitions/models.Response'
-      summary: Get product by id
-      tags:
-      - product
-    put:
-      consumes:
-      - application/json
-      description: update product
-      parameters:
-      - description: product_id
-        in: path
-        name: id
-        required: true
-        type: string
-      - description: product
-        in: body
-        name: product
-        schema:
-          $ref: '#/definitions/models.UpdateProduct'
-      produces:
-      - application/json
-      responses:
-        "200":
-          description: OK
-          schema:
-            $ref: '#/definitions/models.Product'
-        "400":
-          description: Bad Request
-          schema:
-            $ref: '#/definitions/models.Response'
-        "404":
-          description: Not Found
-          schema:
-            $ref: '#/definitions/models.Response'
-        "500":
-          description: Internal Server Error
-          schema:
-            $ref: '#/definitions/models.Response'
-      summary: Update product
-      tags:
-      - product
-  /products:
-    get:
-      consumes:
-      - application/json
-      description: get product list
-      parameters:
-      - description: page
-        in: query
-        name: page
-        type: string
-      - description: limit
-        in: query
-        name: limit
-        type: string
-      - description: search
-        in: query
-        name: search
-        type: string
-      produces:
-      - application/json
-      responses:
-        "200":
-          description: OK
-          schema:
-            $ref: '#/definitions/models.Product'
-        "400":
-          description: Bad Request
-          schema:
-            $ref: '#/definitions/models.Response'
-        "404":
-          description: Not Found
-          schema:
-            $ref: '#/definitions/models.Response'
-        "500":
-          description: Internal Server Error
-          schema:
-            $ref: '#/definitions/models.Response'
-      summary: Get product list
-      tags:
-      - product
-  /products/report:
-    get:
-      consumes:
-      - application/json
-      description: get product report
-      parameters:
-      - description: page
-        in: query
-        name: page
-        type: string
-      - description: limit
-        in: query
-        name: limit
-        type: string
-      - description: from
-        in: query
-        name: from
-        type: string
-      - description: to
-        in: query
-        name: to
-        type: string
-      - description: branch_id
-        in: query
-        name: branch_id
-        type: string
-      produces:
-      - application/json
-      responses:
-        "201":
-          description: Created
-          schema:
-            $ref: '#/definitions/models.ProductReportList'
-        "400":
-          description: Bad Request
-          schema:
-            $ref: '#/definitions/models.Response'
-        "404":
-          description: Not Found
-          schema:
-            $ref: '#/definitions/models.Response'
-        "500":
-          description: Internal Server Error
-          schema:
-            $ref: '#/definitions/models.Response'
-      summary: Get  product report
-      tags:
-      - report
-  /sell-new:
-    post:
-      consumes:
-      - application/json
-      description: selling products
-      parameters:
-      - description: sell_request
-        in: body
-        name: sell_request
-        schema:
-          $ref: '#/definitions/models.SellRequest'
-      produces:
-      - application/json
-      responses:
-        "200":
-          description: OK
-          schema:
-            $ref: '#/definitions/models.Check'
-        "400":
-          description: Bad Request
-          schema:
-            $ref: '#/definitions/models.Response'
-        "404":
-          description: Not Found
-          schema:
-            $ref: '#/definitions/models.Response'
-        "500":
-          description: Internal Server Error
-          schema:
-            $ref: '#/definitions/models.Response'
-      summary: Selling products
-      tags:
-      - product
+      - tweet
   /user:
     post:
       consumes:

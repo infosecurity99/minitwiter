@@ -18,7 +18,7 @@ import (
 // @Accept       json
 // @Produce      json
 // @Param        login body models.CustomerLoginRequest true "login"
-// @Success      201  {object}  models.Basket
+// @Success      201  {object}  models.Like
 // @Failure      400  {object}  models.Response
 // @Failure      404  {object}  models.Response
 // @Failure      500  {object}  models.Response
