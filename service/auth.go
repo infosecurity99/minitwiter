@@ -21,45 +21,16 @@ func NewAuthService(storage storage.IStorage, log logger.ILogger) authService {
 	}
 }
 
-func (a authService) CustomerLogin(ctx context.Context, loginRequest models.CustomerLoginRequest) (models.CustomerLoginResponse, error) {
-	customer, err := a.storage.User().GetCustomerCredentialsByLogin(ctx, loginRequest.Login)
+func (a authService) UserLogin(ctx context.Context, loginRequest models.UserLoginRequest) (models.UserLoginResponse, error) {
+	admin, err := a.storage.User().GetUserCredentialsByLogin(ctx, loginRequest.Login)
 	if err != nil {
-		a.log.Error("error while getting customer credentials by login", logger.Error(err))
-		return models.CustomerLoginResponse{}, err
-	}
-
-	if err = security.CompareHashAndPassword(customer.PasswordHash, loginRequest.Password); err != nil {
-		a.log.Error("error while comparing password", logger.Error(err))
-		return models.CustomerLoginResponse{}, err
-	}
-
-	m := make(map[interface{}]interface{})
-
-	m["user_id"] = customer.ID
-	m["user_role"] = "customer"
-
-	accessToken, refreshToken, err := jwt.GenerateJWT(m)
-	if err != nil {
-		a.log.Error("error while generating tokens for customer login", logger.Error(err))
-		return models.CustomerLoginResponse{}, err
-	}
-
-	return models.CustomerLoginResponse{
-		AccessToken:  accessToken,
-		RefreshToken: refreshToken,
-	}, nil
-}
-
-func (a authService) AdminLogin(ctx context.Context, loginRequest models.AdminLoginRequest) (models.AdminLoginResponse, error) {
-	admin, err := a.storage.User().GetAdminCredentialsByLogin(ctx, loginRequest.Login)
-	if err != nil {
-		a.log.Error("error is while getting admin", logger.Error(err))
-		return models.AdminLoginResponse{}, err
+		a.log.Error("error is while getting user", logger.Error(err))
+		return models.UserLoginResponse{}, err
 	}
 
 	if err := security.CompareHashAndPassword(admin.PasswordHash, loginRequest.Password); err != nil {
 		a.log.Error("password is incorrect", logger.Error(err))
-		return models.AdminLoginResponse{}, err
+		return models.UserLoginResponse{}, err
 	}
 
 	m := make(map[interface{}]interface{})
@@ -69,10 +40,10 @@ func (a authService) AdminLogin(ctx context.Context, loginRequest models.AdminLo
 	accessToken, refreshToken, err := jwt.GenerateJWT(m)
 	if err != nil {
 		a.log.Error("error while generate jwt token", logger.Error(err))
-		return models.AdminLoginResponse{}, err
+		return models.UserLoginResponse{}, err
 	}
 
-	return models.AdminLoginResponse{
+	return models.UserLoginResponse{
 		AccessToken:  accessToken,
 		RefreshToken: refreshToken,
 	}, nil

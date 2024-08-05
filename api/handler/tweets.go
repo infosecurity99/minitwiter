@@ -3,12 +3,13 @@ package handler
 import (
 	"context"
 	"errors"
-	"github.com/gin-gonic/gin"
-	"github.com/google/uuid"
 	"net/http"
 	"strconv"
 	"test/api/models"
 	"time"
+
+	"github.com/gin-gonic/gin"
+	"github.com/google/uuid"
 )
 
 // CreateTweet godoc
@@ -31,7 +32,7 @@ func (h Handler) CreateTweet(c *gin.Context) {
 		return
 	}
 
-	userID, ok := c.Get("user_id") 
+	userID, ok := c.Get("user_id")
 	if !ok {
 		handleResponse(c, h.log, "unauthorized", http.StatusUnauthorized, "user not authenticated")
 		return
@@ -50,7 +51,6 @@ func (h Handler) CreateTweet(c *gin.Context) {
 
 	handleResponse(c, h.log, "tweet created successfully", http.StatusCreated, tweet)
 }
-
 
 // GetTweet godoc
 // @Router       /tweet/{id} [GET]

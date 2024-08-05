@@ -67,25 +67,30 @@ func (t *tweetRepo) GetList(ctx context.Context, request models.GetListRequest) 
 		count  = 0
 		page   = request.Page
 		offset = (page - 1) * request.Limit
+		search = request.Search
 	)
 
+	// Count Query
 	countQuery := `
 		SELECT COUNT(1)
 		FROM tweets
+		WHERE content ILIKE '%' || $1 || '%'
 	`
 
-	err := t.db.QueryRow(ctx, countQuery).Scan(&count)
+	err := t.db.QueryRow(ctx, countQuery, search).Scan(&count)
 	if err != nil {
 		t.log.Error("error while counting tweets", logger.Error(err))
 		return models.TweetsResponse{}, err
 	}
 
+	// Main Query
 	query := `
 		SELECT tweet_id, user_id, content, image_url, video_url, created_at, updated_at
 		FROM tweets
-		ORDER BY created_at DESC LIMIT $1 OFFSET $2
+		WHERE content ILIKE '%' || $1 || '%'
+		ORDER BY created_at DESC LIMIT $2 OFFSET $3
 	`
-	rows, err := t.db.Query(ctx, query, request.Limit, offset)
+	rows, err := t.db.Query(ctx, query, search, request.Limit, offset)
 	if err != nil {
 		t.log.Error("error while querying tweets", logger.Error(err))
 		return models.TweetsResponse{}, err

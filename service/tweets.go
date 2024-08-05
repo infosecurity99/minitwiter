@@ -44,18 +44,6 @@ func (t tweetService) Get(ctx context.Context, id string) (models.Tweet, error) 
 	return tweet, nil
 }
 
-func (t tweetService) GetList(ctx context.Context, request models.GetListRequest) (models.TweetsResponse, error) {
-	t.log.Info("tweet get list service layer", logger.Any("request", request))
-
-	tweets, err := t.storage.Tweets().GetList(ctx, request)
-	if err != nil {
-		t.log.Error("error in service layer while getting list of tweets", logger.Error(err))
-		return models.TweetsResponse{}, err
-	}
-
-	return tweets, nil
-}
-
 func (t tweetService) Update(ctx context.Context, tweet models.UpdateTweet) (models.Tweet, error) {
 	id, err := t.storage.Tweets().Update(ctx, tweet)
 	if err != nil {
@@ -75,4 +63,15 @@ func (t tweetService) Update(ctx context.Context, tweet models.UpdateTweet) (mod
 func (t tweetService) Delete(ctx context.Context, key models.PrimaryKey) error {
 	err := t.storage.Tweets().Delete(ctx, key)
 	return err
+}
+func (t tweetService) GetList(ctx context.Context, request models.GetListRequest) (models.TweetsResponse, error) {
+	t.log.Info("tweet get list service layer", logger.Any("request", request))
+
+	tweets, err := t.storage.Tweets().GetList(ctx, request)
+	if err != nil {
+		t.log.Error("error in service layer while getting list of tweets", logger.Error(err))
+		return models.TweetsResponse{}, err
+	}
+
+	return tweets, nil
 }

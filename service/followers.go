@@ -34,8 +34,6 @@ func (f followersService) Create(ctx context.Context, follower models.CreateFoll
     return createdFollower, nil
 }
 
-
-
 func (f followersService) Get(ctx context.Context, id string) (models.Follower, error) {
     follower, err := f.storage.Followers().GetByID(ctx, models.PrimaryKey{ID: id})
     if err != nil {
@@ -45,8 +43,6 @@ func (f followersService) Get(ctx context.Context, id string) (models.Follower, 
 
     return follower, nil
 }
-
-
 
 
 func (f followersService) GetList(ctx context.Context, request models.GetListRequest) (models.FollowersResponse, error) {
@@ -60,8 +56,6 @@ func (f followersService) GetList(ctx context.Context, request models.GetListReq
 
     return followers, nil
 }
-
-
 
 
 func (f followersService) Delete(ctx context.Context, key models.PrimaryKey) error {

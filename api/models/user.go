@@ -30,7 +30,7 @@ type UpdateUser struct {
 
 type UsersResponse struct {
 	Users []User `json:"users"`
-	Count int    `json:"count"`
+	Count int   `json:"count"`
 }
 
 type UpdateUserPassword struct {

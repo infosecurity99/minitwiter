@@ -23,8 +23,7 @@ type IUserStorage interface {
 	Update(ctx context.Context, updateUser models.UpdateUser) (models.User, error)
 	Delete(ctx context.Context, key models.PrimaryKey) error
 	UpdatePassword(ctx context.Context, request models.UpdateUserPassword) error
-	GetAdminCredentialsByLogin(ctx context.Context, login string) (models.User, error)
-	GetCustomerCredentialsByLogin(ctx context.Context, login string) (models.User, error)
+	GetUserCredentialsByLogin(ctx context.Context, login string) (models.User, error)
 	GetPassword(ctx context.Context, id models.PrimaryKey) (string, error)
 }
 

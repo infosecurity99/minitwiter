@@ -18,7 +18,7 @@ type userService struct {
 }
 
 func NewuserService(storage storage.IStorage, log logger.ILogger) userService {
-	return userService{storage: storage,log:  log}
+	return userService{storage: storage, log: log}
 }
 
 func (u userService) Create(ctx context.Context, createUser models.CreateUser) (string, error) {
@@ -121,8 +121,8 @@ func (u userService) UpdatePassword(ctx context.Context, request models.UpdateUs
 	return nil
 }
 
-func (u userService) GetAdminCredentialsByLogin(ctx context.Context, login string) (models.User, error) {
-	user, err := u.storage.User().GetAdminCredentialsByLogin(ctx, login)
+func (u userService) GetUserCredentialsByLogin(ctx context.Context, login string) (models.User, error) {
+	user, err := u.storage.User().GetUserCredentialsByLogin(ctx, login)
 	if err != nil {
 		u.log.Error("Error while retrieving admin credentials by login", logger.Error(err))
 		return models.User{}, err
@@ -130,19 +130,12 @@ func (u userService) GetAdminCredentialsByLogin(ctx context.Context, login strin
 	return user, nil
 }
 
-func (u userService) GetCustomerCredentialsByLogin(ctx context.Context, login string) (models.User, error) {
-	user, err := u.storage.User().GetCustomerCredentialsByLogin(ctx, login)
-	if err != nil {
-		u.log.Error("Error while retrieving customer credentials by login", logger.Error(err))
-		return models.User{}, err
-	}
-	return user, nil
-}
+
 func (u userService) GetPassword(ctx context.Context, id models.PrimaryKey) (string, error) {
-    user, err := u.storage.User().GetByID(ctx, id)
-    if err != nil {
-        u.log.Error("Error while retrieving user", logger.Error(err))
-        return "", err
-    }
-    return user.PasswordHash, nil // Ensure `Password` field is accessible
+	user, err := u.storage.User().GetByID(ctx, id)
+	if err != nil {
+		u.log.Error("Error while retrieving user", logger.Error(err))
+		return "", err
+	}
+	return user.PasswordHash, nil // Ensure `Password` field is accessible
 }

@@ -1,18 +1,4 @@
 definitions:
-  models.AdminLoginRequest:
-    properties:
-      login:
-        type: string
-      password:
-        type: string
-    type: object
-  models.AdminLoginResponse:
-    properties:
-      access_token:
-        type: string
-      refresh_token:
-        type: string
-    type: object
   models.CreateFollower:
     properties:
       follower_user_id:
@@ -56,13 +42,6 @@ definitions:
       profile_picture:
         type: string
       username:
-        type: string
-    type: object
-  models.CustomerLoginRequest:
-    properties:
-      login:
-        type: string
-      password:
         type: string
     type: object
   models.Follower:
@@ -185,6 +164,20 @@ definitions:
       username:
         type: string
     type: object
+  models.UserLoginRequest:
+    properties:
+      login:
+        type: string
+      password:
+        type: string
+    type: object
+  models.UserLoginResponse:
+    properties:
+      access_token:
+        type: string
+      refresh_token:
+        type: string
+    type: object
   models.UsersResponse:
     properties:
       count:
@@ -200,7 +193,7 @@ info:
   title: Swagger Example API
   version: "1.0"
 paths:
-  /auth/admin/login:
+  /auth/user/login:
     post:
       consumes:
       - application/json
@@ -211,14 +204,14 @@ paths:
         name: login
         required: true
         schema:
-          $ref: '#/definitions/models.AdminLoginRequest'
+          $ref: '#/definitions/models.UserLoginRequest'
       produces:
       - application/json
       responses:
         "201":
           description: Created
           schema:
-            $ref: '#/definitions/models.AdminLoginResponse'
+            $ref: '#/definitions/models.UserLoginResponse'
         "400":
           description: Bad Request
           schema:
@@ -231,41 +224,7 @@ paths:
           description: Internal Server Error
           schema:
             $ref: '#/definitions/models.Response'
-      summary: Admin login
-      tags:
-      - auth
-  /auth/customer/login:
-    post:
-      consumes:
-      - application/json
-      description: Customer login
-      parameters:
-      - description: login
-        in: body
-        name: login
-        required: true
-        schema:
-          $ref: '#/definitions/models.CustomerLoginRequest'
-      produces:
-      - application/json
-      responses:
-        "201":
-          description: Created
-          schema:
-            $ref: '#/definitions/models.Like'
-        "400":
-          description: Bad Request
-          schema:
-            $ref: '#/definitions/models.Response'
-        "404":
-          description: Not Found
-          schema:
-            $ref: '#/definitions/models.Response'
-        "500":
-          description: Internal Server Error
-          schema:
-            $ref: '#/definitions/models.Response'
-      summary: Customer login
+      summary: User login
       tags:
       - auth
   /follower:

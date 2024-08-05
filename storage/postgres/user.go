@@ -187,18 +187,9 @@ func (u *userRepo) UpdatePassword(ctx context.Context, request models.UpdateUser
 	return nil
 }
 
-func (u *userRepo) GetCustomerCredentialsByLogin(ctx context.Context, login string) (models.User, error) {
-	user := models.User{}
-	query := `SELECT user_id, password_hash FROM users WHERE username = $1`
-	if err := u.db.QueryRow(ctx, query, login).Scan(&user.ID, &user.PasswordHash); err != nil {
-		u.log.Error("error while retrieving customer credentials by login", logger.Error(err))
-		return models.User{}, err
-	}
 
-	return user, nil
-}
 
-func (u *userRepo) GetAdminCredentialsByLogin(ctx context.Context, login string) (models.User, error) {
+func (u *userRepo) GetUserCredentialsByLogin(ctx context.Context, login string) (models.User, error) {
 	user := models.User{}
 	query := `SELECT user_id, password_hash FROM users WHERE username = $1`
 	if err := u.db.QueryRow(ctx, query, login).Scan(&user.ID, &user.PasswordHash); err != nil {
@@ -208,3 +199,4 @@ func (u *userRepo) GetAdminCredentialsByLogin(ctx context.Context, login string)
 
 	return user, nil
 }
+
